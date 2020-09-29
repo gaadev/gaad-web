@@ -1,5 +1,5 @@
 <template>
-  <span class="screenshot">
+  <span class="screenshot" style="display: none;">
     <el-tooltip class="item"
                 effect="dark"
                 :content="$t('feedback')"

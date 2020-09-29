@@ -19,6 +19,7 @@ import './styles/common.scss';
 import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
 
+
 Vue.use(router)
 Vue.use(VueAxios, axios)
 Vue.use(Element, {

@@ -98,7 +98,7 @@ export default {
     }
   },
   created() {
-    this.getInfo()
+    // this.getInfo()
   },
   computed: {},
   methods: {

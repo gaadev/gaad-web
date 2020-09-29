@@ -3,33 +3,44 @@ import Mock from 'mockjs'
 const first = [{
     label: "工作台",
     path: '/dashboard',
-    component: 'views/util/tags',
+    component: 'views/wel/dashboard',
     icon: 'fa fa-tachometer',
     children: []
-},{
-    label: "主机管理",
+}, {
+    label: "节点管理",
     path: '/host',
-    component: 'views/host/index',
     icon: 'fa fa-television',
-    children: []
-},{
+    children: [{
+        label: "主机管理",
+        path: 'index',
+        component: 'views/host/index',
+        icon: 'fa fa-rocket',
+        children: []
+    }, {
+        label: "集群管理",
+        path: 'cluster',
+        component: 'views/host/cluster',
+        icon: 'fa fa-book',
+        children: []
+    }]
+}, {
     label: "应用发布",
     path: '/deploy',
     icon: 'fa fa-cloud',
     children: [{
-        label: "应用管理",
+        label: "项目管理",
         path: 'app',
         component: 'views/deploy/app',
         icon: 'fa fa-book',
         children: []
-    },{
-        label: "应用发布",
+    }, {
+        label: "服务管理",
         path: 'deploy',
-        component: 'views/deploy/deploy',
+        component: 'views/deploy/service',
         icon: 'fa fa-rocket',
         children: []
     }]
-},{
+}, {
     label: "配置中心",
     path: '/config',
     icon: 'fa fa-cogs',
@@ -39,13 +50,13 @@ const first = [{
         component: 'components/error-page/403',
         icon: 'fa fa-server',
         children: []
-    },{
+    }, {
         label: "服务配置",
         path: 'error',
         component: 'components/error-page/403',
         icon: 'fa fa-server',
         children: []
-    },{
+    }, {
         label: "应用配置",
         path: 'error',
         component: 'components/error-page/403',
