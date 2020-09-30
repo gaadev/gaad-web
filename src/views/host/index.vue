@@ -1,13 +1,27 @@
 <template>
   <basic-container>
     <avue-crud :option="option"
-               :data="tableData" @refresh-change="handleRefreshChange" @search-change="handleSearchChange" @current-change="handleCurrentChange"
+               :data="tableData"
+               :before-open="beforeOpen"
+               @refresh-change="handleRefreshChange"
+               @search-change="handleSearchChange"
+               @current-change="handleCurrentChange"
                @size-change="handleSizeChange"
-               @row-save="handleRowSave" ref="crud" :page.sync="page" :table-loading="tableLoading">
+               @row-save="handleRowSave"
+               @row-update="handleRowUpdate"
+               @row-del="handleRowDel"
+               ref="crud" :page.sync="page" :table-loading="tableLoading">
+      <template slot="clusterId" slot-scope="scope">
+        <el-tag v-if="scope.clusterName">{{ scope.clusterName }}</el-tag>
+      </template>
       <template slot-scope="scope" slot="menuForm">
         <el-button size="small" @click="$refs.crud.closeDialog()">取消
         </el-button>
-        <el-button type="primary" size="small" @click="$refs.crud.rowSave(scope.row,scope.done,scope.loading)">验证
+        <el-button type="primary" size="small" v-if="type=='add'"
+                   @click="$refs.crud.rowSave(scope.row,scope.done,scope.loading)">验证
+        </el-button>
+        <el-button type="primary" size="small" v-if="type=='edit'"
+                   @click="$refs.crud.rowUpdate(scope.row,scope.done,scope.loading)">验证
         </el-button>
       </template>
     </avue-crud>
@@ -15,12 +29,13 @@
 </template>
 <script>
 import tableOption from '@/const/host/index';
-import {getHostList, addHost} from "@/api/host";
+import {getHostList, addHost, updateHost, deleteHost} from "@/api/host";
 
 export default {
   name: 'host',
   data() {
     return {
+      type: '',
       tableLoading: false,
       page: {
         pageSize: 10,
@@ -28,13 +43,20 @@ export default {
         currentPage: 1,
       },
       option: tableOption,
-      tableData: []
+      tableData: [],
+      selectParams: {
+        ip: null,
+      }
     }
   },
   created() {
     this.handleList()
   },
   methods: {
+    beforeOpen(done, type) {
+      this.type = type;
+      done()
+    },
     /**
      * 刷新按钮触发该事件
      */
@@ -47,6 +69,7 @@ export default {
      */
     handleSearchChange(params, done) {
       this.page.currentPage = 1;
+      this.selectParams.ip = params.ip;
       this.handleList();
       setTimeout(() => {
         done();
@@ -70,18 +93,22 @@ export default {
     /**
      * 查询列表
      */
-    handleList() {
+    handleList(val) {
+      if (val != null && val == 'init') {
+        this.page.currentPage = 1;
+      }
       const params = {
         curPage: this.page.currentPage,
-        pageRecord: this.page.pageSize
-      };
+        pageRecord: this.page.pageSize,
+        ip: this.selectParams.ip
+      }
       this.tableLoading = true;
       getHostList(params).then(res => {
         const data = res.data;
         if (data.code == 200) {
           setTimeout(() => {
-            this.tableData = data.data.nodes;
-            if (data.data.nodes.length > 0) {
+            this.tableData = data.data.data;
+            if (data.data.data.length > 0) {
               this.page = {
                 total: data.data.total,
                 pageSize: data.data.pageRecord,
@@ -95,7 +122,6 @@ export default {
         }
       }).catch(err => {
         this.tableLoading = false;
-        this.tableData = [];
       })
     },
     /**
@@ -110,6 +136,7 @@ export default {
         const data = res.data;
         if (data.code == 200) {
           this.$message.success("添加成功");
+          this.handleList('init');
           setTimeout(() => {
             done()
           }, 200)
@@ -118,31 +145,51 @@ export default {
         }
       })
     },
-    handleAddCategory() {
-      this.$prompt('主机类别', '添加主机类别', {
+    /**
+     * 更新主机
+     * @param row
+     * @param index
+     * @param done
+     * @param loading
+     */
+    handleRowUpdate(row, index, done, loading) {
+      loading();
+      updateHost(row).then(res => {
+        const data = res.data;
+        if (data.code == 200) {
+          this.$message.success("更新成功");
+          this.handleList('init');
+          setTimeout(() => {
+            done()
+          }, 200)
+        } else {
+          this.$message.error(data.msg);
+        }
+      })
+    },
+    /**
+     * 删除主机
+     * @param row
+     * @param index
+     */
+    handleRowDel(row, index) {
+      this.$confirm('确认删除当前主机?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputValidator: function (val) {
-          if (!val) {
-            return false;
+        type: 'warning'
+      }).then(() => {
+        deleteHost(row).then(res => {
+          const data = res.data;
+          if (data.code == 200) {
+            this.$message.success("删除成功");
+            this.handleList('init');
+          } else {
+            this.$message.error(data.msg);
           }
-          if (val.length < 0) {
-            return false;
-          }
-          return true;
-        },
-        inputErrorMessage: '请输入主机类别'
-      }).then(({value}) => {
-        this.$message({
-          type: 'success',
-          message: '你的邮箱是: ' + value
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
+        })
+      }).catch(err => {
+        console.log(err);
+      })
     },
   },
 

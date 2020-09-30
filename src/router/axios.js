@@ -20,7 +20,7 @@ axios.defaults.validateStatus = function (status) {
   return status >= 200 && status <= 500; // 默认的
 };
 //跨域请求，允许保存cookie
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = false;
 // NProgress Configuration
 NProgress.configure({
   showSpinner: false
@@ -53,7 +53,6 @@ axios.interceptors.response.use(res => {
   if (status === 401) store.dispatch('FedLogOut').then(() => router.push({ path: '/login' }));
   // 如果请求为非200否者默认统一处理
   if (status !== 200) {
-    console.log(1111)
     Message({
       message: message,
       type: 'error'

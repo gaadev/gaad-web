@@ -14,10 +14,6 @@ export const loginByUsername = (username, password, code, redomStr) => request({
     }
 })
 
-export const test = (params) => request({
-    url: 'http://192.168.10.236:7779/project/display?start='+params,
-    method: 'get'
-})
 
 export const getUserInfo = () => request({
     url: baseUrl + '/user/getUserInfo',

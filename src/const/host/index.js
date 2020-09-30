@@ -9,7 +9,7 @@ export default {
     align: 'center',
     menuAlign: 'center',
     columnBtn: false, //是否显示显影按钮
-    delBtn: false,   //是否显示删除按钮
+    delBtn: true,   //是否显示删除按钮
     addBtn: true,   //是否显示添加按钮
     addTitle: '新增主机',//添加弹窗标题
     editBtn: true,  //是否显示编辑按钮
@@ -66,6 +66,20 @@ export default {
         label: "所属集群",
         prop: "clusterId",
         fixed: true,
+        slot: true
+    }, {
+        label: "状态",
+        prop: "status",
+        fixed: true,
+        type: 'select',
+        value: 1,
+        dicData: [{
+            label: '可用',
+            value: 1
+        }, {
+            label: '不可用',
+            value: 0
+        }]
     }, {
         label: "备注",
         prop: "remark",

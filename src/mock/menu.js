@@ -1,6 +1,6 @@
 import Mock from 'mockjs'
 
-const first = [{
+export default [{
     label: "工作台",
     path: '/dashboard',
     component: 'views/wel/dashboard',
@@ -29,14 +29,14 @@ const first = [{
     icon: 'fa fa-cloud',
     children: [{
         label: "项目管理",
-        path: 'app',
-        component: 'views/deploy/app',
+        path: 'project',
+        component: 'views/project/index',
         icon: 'fa fa-book',
         children: []
     }, {
         label: "服务管理",
-        path: 'deploy',
-        component: 'views/deploy/service',
+        path: 'service',
+        component: 'views/project/service',
         icon: 'fa fa-rocket',
         children: []
     }]
@@ -66,19 +66,19 @@ const first = [{
 }]
 const second = []
 
-export default ({mock}) => {
-    if (!mock) return;
-    let menu = [first, second];
-    Mock.mock('/user/getMenu', 'get', (res) => {
-        let body = JSON.parse(res.body);
-        return {
-            data: menu[body.type] || []
-        }
-    })
-    Mock.mock('/user/getTopMenu', 'get', () => {
-        return {
-            data: []
-        }
-    })
-
-}
+// export default ({mock}) => {
+//     // if (!mock) return;
+//     let menu = [first, second];
+//     Mock.mock('/user/getMenu', 'get', (res) => {
+//         let body = JSON.parse(res.body);
+//         return {
+//             data: menu[body.type] || []
+//         }
+//     })
+//     Mock.mock('/user/getTopMenu', 'get', () => {
+//         return {
+//             data: []
+//         }
+//     })
+//
+// }

@@ -53,7 +53,6 @@
   </basic-container>
 </template>
 <script>
-import {test} from '@/api/user'
 
 export default {
   name: 'deploy',
@@ -105,11 +104,11 @@ export default {
 
     getInfo() {
       setInterval(() => {
-        test(this.page).then(res => {
-          this.testInfo = res.data.data.data
-          this.detailInfo = this.testInfo.split('\n');
-          // this.page= this.page + 1;
-        });
+        // test(this.page).then(res => {
+        //   this.testInfo = res.data.data.data
+        //   this.detailInfo = this.testInfo.split('\n');
+        //   // this.page= this.page + 1;
+        // });
       }, 1000)
     }
 
