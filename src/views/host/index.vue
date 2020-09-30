@@ -11,17 +11,14 @@
                @row-update="handleRowUpdate"
                @row-del="handleRowDel"
                ref="crud" :page.sync="page" :table-loading="tableLoading">
-      <template slot="clusterId" slot-scope="scope">
-        <el-tag v-if="scope.clusterName">{{ scope.clusterName }}</el-tag>
-      </template>
       <template slot-scope="scope" slot="menuForm">
         <el-button size="small" @click="$refs.crud.closeDialog()">取消
         </el-button>
         <el-button type="primary" size="small" v-if="type=='add'"
-                   @click="$refs.crud.rowSave(scope.row,scope.done,scope.loading)">验证
+                   @click="$refs.crud.rowSave(scope.row,scope.done,scope.loading)">新增
         </el-button>
         <el-button type="primary" size="small" v-if="type=='edit'"
-                   @click="$refs.crud.rowUpdate(scope.row,scope.done,scope.loading)">验证
+                   @click="$refs.crud.rowUpdate(scope.row,scope.done,scope.loading)">更新
         </el-button>
       </template>
     </avue-crud>
@@ -132,6 +129,7 @@ export default {
      */
     handleRowSave(row, done, loading) {
       loading();
+      row.clusterName = row.$clusterId;
       addHost(row).then(res => {
         const data = res.data;
         if (data.code == 200) {

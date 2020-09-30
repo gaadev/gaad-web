@@ -9,7 +9,7 @@ export default {
     align: 'center',
     menuAlign: 'center',
     columnBtn: false, //是否显示显影按钮
-    delBtn: false,   //是否显示删除按钮
+    delBtn: true,   //是否显示删除按钮
     addBtn: true,   //是否显示添加按钮
     addTitle: '新增集群',//添加弹窗标题
     editBtn: true,  //是否显示编辑按钮
@@ -28,6 +28,25 @@ export default {
             trigger: "blur"
         }]
     }, {
+        label: "集群类型",
+        prop: "category",
+        type: 'select',
+        fixed: true,
+        search: true,
+        rules: [{
+            required: true,
+            message: "请选择集群类型",
+            trigger: "blur"
+        }],
+        value: 'Docker Swarm',
+        dicData: [{
+            label: 'Docker Swarm',
+            value: "Docker Swarm"
+        }, {
+            label: 'Kubernetes',
+            value: "Kubernetes"
+        }]
+    }, {
         label: "状态",
         prop: "status",
         fixed: true,
@@ -38,7 +57,7 @@ export default {
             value: 1
         }, {
             label: '不可用',
-            value: 0
+            value: 2
         }]
     }, {
         label: "备注",

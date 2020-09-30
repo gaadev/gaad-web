@@ -36,6 +36,9 @@ export default {
       },
       option: tableOption,
       tableData: [],
+      selectParams: {
+        clusterName: null,
+      }
     }
   },
   created() {
@@ -58,6 +61,7 @@ export default {
      */
     handleSearchChange(params, done) {
       this.page.currentPage = 1;
+      this.selectParams.clusterName = params.clusterName;
       this.handleList();
       setTimeout(() => {
         done();
@@ -87,7 +91,8 @@ export default {
       }
       const params = {
         curPage: this.page.currentPage,
-        pageRecord: this.page.pageSize
+        pageRecord: this.page.pageSize,
+        clusterName: this.selectParams.clusterName
       }
       this.tableLoading = true;
       getClusterPage(params).then(res => {

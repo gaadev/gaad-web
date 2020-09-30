@@ -1,3 +1,5 @@
+import {baseUrl} from "@/config/env";
+
 export default {
     border: true,
     index: true,
@@ -66,7 +68,14 @@ export default {
         label: "所属集群",
         prop: "clusterId",
         fixed: true,
-        slot: true
+        type: "select",
+        dicFlag: true,
+        dicMethod: 'post',
+        props: {
+            label: 'clusterName',
+            value: 'ID'
+        },
+        dicUrl: baseUrl + '/cluster/listClusters',
     }, {
         label: "状态",
         prop: "status",
@@ -78,7 +87,7 @@ export default {
             value: 1
         }, {
             label: '不可用',
-            value: 0
+            value: 2
         }]
     }, {
         label: "备注",
