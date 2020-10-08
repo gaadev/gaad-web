@@ -42,6 +42,16 @@ export const getHostList = (params) => request({
     method: 'post',
     data: params
 })
+/**
+ * 集群分配主机-查询主机列表
+ * @param params
+ * @returns {{method: string, data: *, url: string}}
+ */
+export const getHostListForCluster = (params) => request({
+    url: baseUrl + '/cluster/pageNodesForCluster',
+    method: 'post',
+    data: params
+})
 
 
 /**
@@ -95,4 +105,36 @@ export const getClusterList = (params) => request({
     method: 'post',
     data: params
 })
+/**
+ * 分配主机>设置主从节点
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const setNodeForCluster = (params) => request({
+    url: baseUrl + '/cluster/setNode',
+    method: 'put',
+    data: params
+})
+/**
+ * 查看集群详情-获取集群主机
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const getNodesForCluster = (params) => request({
+    url: baseUrl + '/cluster/listNodes',
+    method: 'post',
+    data: params
+})
+/**
+ * 查看进群详情-移除节点
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const removeNodeForCluster = (params) => request({
+    url: baseUrl + '/cluster/removeNode',
+    method: 'delete',
+    data: params
+})
+
+
 

@@ -12,22 +12,40 @@
                @row-del="handleRowDel"
                ref="crud" :page.sync="page" :table-loading="tableLoading">
       <template slot-scope="{row,type,size}" slot="menu">
-        <el-button icon="el-icon-setting" :size="size" :type="type">分配主机</el-button>
+        <el-button icon="el-icon-view" :size="size" :type="type" @click="handleAssignHost(row,'view')">查看详情</el-button>
+        <el-button icon="el-icon-setting" :size="size" :type="type" @click="handleAssignHost(row,'assign')">分配主机
+        </el-button>
         <el-button icon="el-icon-share" :size="size" :type="type" @click="handleInit(row)">初始化环境</el-button>
       </template>
     </avue-crud>
+    <el-dialog :title="assignHostForm.type=='view'?'查看详情':'分配主机'"
+               :visible.sync="assignHostForm.hostDialogVisible"
+               width="60%" append-to-body :before-close="handleHostClose">
+      <HostForm v-if="assignHostForm.hostDialogVisible&&assignHostForm.type=='assign'"
+                v-model="assignHostForm.info"></HostForm>
+      <ClusterView v-if="assignHostForm.hostDialogVisible&&assignHostForm.type=='view'" v-model="assignHostForm.info"></ClusterView>
+    </el-dialog>
   </basic-container>
 </template>
 <script>
 import tableOption from '@/const/host/cluster'
 import {getClusterPage, addCluster, updateCluster, deleteCluster} from "@/api/host";
-
+import HostForm from './form/host_form'
+import ClusterView from './form/cluster_view'
 
 export default {
   name: 'host',
+  components: {
+    HostForm, ClusterView
+  },
   data() {
     return {
       type: '',
+      assignHostForm: {
+        hostDialogVisible: false,
+        info: {},
+        type: 'assign'
+      },
       tableLoading: false,
       page: {
         pageSize: 10,
@@ -183,7 +201,6 @@ export default {
      * @param row
      */
     handleInit(row) {
-      console.log(row);
       this.$confirm('确认初始化环境?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -210,6 +227,21 @@ export default {
         })
       })
     },
+    /**
+     * 分配主机
+     */
+    handleAssignHost(row, type) {
+      this.assignHostForm.info = row;
+      this.assignHostForm.type = type;
+      this.assignHostForm.hostDialogVisible = true;
+    },
+    /**
+     * 分配主机-关闭弹窗
+     */
+    handleHostClose() {
+      this.assignHostForm.clusterId = null;
+      this.assignHostForm.hostDialogVisible = false;
+    }
   }
 }
 </script>

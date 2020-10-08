@@ -5,7 +5,7 @@ export default {
     labelWidth: 120,
     selection: true,
     menuBtn: true,
-    menuWidth: 300,
+    menuWidth: 400,
     align: 'center',
     menuAlign: 'center',
     columnBtn: false, //是否显示显影按钮

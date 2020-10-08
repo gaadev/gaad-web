@@ -129,7 +129,10 @@ export default {
      */
     handleRowSave(row, done, loading) {
       loading();
-      row.clusterName = row.$clusterId;
+      if (row.clusterId == '' || row.clusterId == null) {
+        row.clusterId = 0;
+        row.clusterName = row.$clusterId;
+      }
       addHost(row).then(res => {
         const data = res.data;
         if (data.code == 200) {
@@ -152,6 +155,10 @@ export default {
      */
     handleRowUpdate(row, index, done, loading) {
       loading();
+      if (row.clusterId == '' || row.clusterId == null) {
+        row.clusterId = 0;
+        row.clusterName = row.$clusterId;
+      }
       updateHost(row).then(res => {
         const data = res.data;
         if (data.code == 200) {

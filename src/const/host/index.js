@@ -71,6 +71,7 @@ export default {
         type: "select",
         dicFlag: true,
         dicMethod: 'post',
+        editDisabled: true,
         props: {
             label: 'clusterName',
             value: 'ID'
