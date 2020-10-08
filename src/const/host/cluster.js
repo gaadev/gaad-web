@@ -51,6 +51,7 @@ export default {
         prop: "status",
         fixed: true,
         type: 'select',
+        slot: true,
         value: 1,
         dicData: [{
             label: '可用',

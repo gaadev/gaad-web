@@ -21,6 +21,9 @@
                    @click="$refs.crud.rowUpdate(scope.row,scope.done,scope.loading)">更新
         </el-button>
       </template>
+      <template slot="status" slot-scope="scope">
+        <el-tag :type="scope.row.status==2?'danger':'success'">{{ scope.row.$status }}</el-tag>
+      </template>
     </avue-crud>
   </basic-container>
 </template>

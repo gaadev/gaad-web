@@ -83,6 +83,7 @@ export default {
         fixed: true,
         type: 'select',
         value: 1,
+        slot: true,
         dicData: [{
             label: '可用',
             value: 1

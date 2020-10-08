@@ -17,6 +17,9 @@
         </el-button>
         <el-button icon="el-icon-share" :size="size" :type="type" @click="handleInit(row)">初始化环境</el-button>
       </template>
+      <template slot="status" slot-scope="scope">
+        <el-tag :type="scope.row.status==2?'danger':'success'">{{ scope.row.$status }}</el-tag>
+      </template>
     </avue-crud>
     <el-dialog :title="assignHostForm.type=='view'?'查看详情':'分配主机'"
                :visible.sync="assignHostForm.hostDialogVisible"
