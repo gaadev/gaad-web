@@ -1,121 +1,267 @@
 <template>
   <basic-container>
-    <!--    <div><p>项目AAAA的构建文件</p></div>-->
-    <el-container>
-      <el-aside width="30%" style="min-height: 743px;">
-        <avue-tree :option="treeOption" :data="treeData" @node-click="nodeClick"></avue-tree>
-      </el-aside>
-      <el-container>
-        <el-header height="50px">
-          <div style="display: flex;justify-content: space-between">
-            <div>
-              <el-button icon="el-icon-plus" type="primary" @click="handleChange" size="small">新 增</el-button>
-              <el-button icon="el-icon-edit" type="primary" size="small">编 辑</el-button>
-              <el-button icon="el-icon-delete" type="danger" size="small">删 除</el-button>
-              <el-button icon="el-icon-check" type="primary" size="small">更 新</el-button>
-              <el-button icon="el-icon-check" type="primary" size="small">保 存</el-button>
-              <el-button icon="el-icon-close" size="small">取 消</el-button>
-            </div>
-            <el-select style="right: 0px;position:relative;">
-              <!--              <el-option-->
-              <!--                  v-for="item in options"-->
-              <!--                  :key="item.value"-->
-              <!--                  :label="item.label"-->
-              <!--                  :value="item.value">-->
-              <!--              </el-option>-->
-            </el-select>
-          </div>
-        </el-header>
-        <el-main>
-          <editor v-model="content" @init="editorInit" :lang="language" :options="options" :theme="theme"
-                  ref="myEditor"></editor>
-        </el-main>
-      </el-container>
-    </el-container>
+    <avue-crud :option="option"
+               :data="tableData"
+               :before-open="beforeOpen"
+               @refresh-change="handleRefreshChange"
+               @search-change="handleSearchChange"
+               @current-change="handleCurrentChange"
+               @size-change="handleSizeChange"
+               ref="crud" :page.sync="page" :table-loading="tableLoading">
+      <template slot="status" slot-scope="scope">
+        <el-tag :type="scope.row.status==2?'danger':'success'">{{ scope.row.$status }}</el-tag>
+      </template>
+      <template slot-scope="scope" slot="menuLeft">
+        <el-button type="primary" icon="el-icon-plus" size="small" @click.stop="handleAdd">新 增</el-button>
+      </template>
+      <template slot-scope="scope" slot="menu">
+        <el-button type="text" icon="el-icon-edit" plain size="small" @click.stop="handleEdit(scope.row)">编 辑
+        </el-button>
+        <el-button type="text" icon="el-icon-delete" plain size="small" @click.stop="handleRowDel(scope.row)">删 除
+        </el-button>
+        <el-button type="text" icon="el-icon-setting" plain size="small" >项目配置
+        </el-button>
+      </template>
+    </avue-crud>
+    <el-dialog :title="addForm.type=='add'?'项目':'修改'"
+               :visible.sync="addForm.dialogVisible"
+               width="60%" append-to-body :before-close="handleFormClose">
+      <serviceForm></serviceForm>
+    </el-dialog>
   </basic-container>
 </template>
 <script>
-//
-// width="300px"
+import tableOption from '@/const/project/service'
+import formOption from '@/const/project/service_form'
+import {createProject, pageProjects, deleteProject, updateProject} from '@/api/project/index'
+import serviceForm from './form/service_form'
 export default {
-  name: 'host',
+  name: 'service',
+  components:{
+    serviceForm
+  },
   data() {
     return {
-      treeData: [{
-        value: 0,
-        label: '一级部门',
-        children: [
-          {
-            value: 1,
-            label: '一级部门1',
-          }
-        ]
-      }],
-      treeOption: {
-        defaultExpandAll: true,
-        formOption: {
-          labelWidth: 100,
-          column: [{
-            label: '自定义项',
-            prop: 'test'
-          }],
-        },
-        props: {
-          labelText: '标题',
-          label: 'label',
-          value: 'value',
-          children: 'children'
-        }
+      type: '',
+      tableLoading: false,
+      page: {
+        pageSize: 10,
+        pagerCount: 0,
+        currentPage: 1,
       },
-      language: 'yaml',
-      theme: 'xcode',
-      content: null,
-      options: {/*vue2-ace-editor编辑器配置自动补全等*/
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true,/*自动补全*/
-        // readOnly: true
+      form: {
+        status: 1,
       },
+      addForm: {
+        dialogVisible: false,
+        type: 'add'
+      },
+      option: tableOption,
+      tableData: [],
+      formOption: formOption,
+      selectParams: {
+        projectName: null,
+        wsCode: null,
+      }
     }
-  },
-  components: {
-    editor: require('vue2-ace-editor'),
   },
   created() {
-
+    this.handleList();
   },
   methods: {
-    editorInit: function () {
-      require('brace/ext/language_tools') //language extension prerequsite...
-      require('brace/mode/yaml')
-      require('brace/snippets/yaml')      //snippet
-      require('brace/mode/dockerfile')    //language
-      require('brace/snippets/dockerfile')      //snippet
-      require('brace/theme/twilight')
-      require('brace/theme/xcode')
+    beforeOpen(done, type) {
+      this.type = type;
+      done()
     },
-    handleChange() {
-      let editor = this.$refs.myEditor.editor
-      editor.setReadOnly(false);
-      this.theme = 'twilight';
-      // this.options.readOnly = false;
-      // this.$prompt('验证码', '身份验证', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   inputErrorMessage: '请输入6位验证码'
-      // }).then(({value}) => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: '你输入的验证码是: ' + value
-      //   });
-      //   this.language = value;
-      // })
-    }
+    /**
+     * 刷新按钮触发该事件
+     */
+    handleRefreshChange(page) {
+      this.page.currentPage = 1;
+      this.handleList();
+    },
+    /**
+     * 搜索按钮触发事件
+     */
+    handleSearchChange(params, done) {
+      this.page.currentPage = 1;
+      this.selectParams.projectName = params.projectName;
+      // this.selectParams.wsCode = params.wsCode;
+      this.handleList();
+      setTimeout(() => {
+        done();
+      }, 1000);
+    },
+    /**
+     *切换页面时触发该事件
+     */
+    handleCurrentChange(page) {
+      this.page.currentPage = page;
+      this.handleList();
+    },
+    /**
+     * 页面每页显示的条数触发该事件
+     */
+    handleSizeChange(pageSize) {
+      this.page.pageSize = pageSize;
+      this.page.currentPage = 1;
+      this.handleList();
+    },
+    /**
+     * 查询列表
+     */
+    handleList(val) {
+      if (val != null && val == 'init') {
+        this.page.currentPage = 1;
+      }
+      const params = {
+        curPage: this.page.currentPage,
+        pageRecord: this.page.pageSize,
+        projectName: this.selectParams.projectName,
+        // wsCode: this.selectParams.wsCode
+      }
+      this.tableLoading = true;
+      pageProjects(params).then(res => {
+        const data = res.data;
+        if (data.code == 200) {
+          setTimeout(() => {
+            this.tableData = data.data.data;
+            if (data.data.data.length > 0) {
+              this.page = {
+                total: data.data.total,
+                pageSize: data.data.pageRecord,
+                currentPage: data.data.curPage
+              };
+            }
+            this.tableLoading = false;
+          }, 1000);
+        } else {
+          this.tableLoading = false;
+        }
+      }).catch(err => {
+        this.tableLoading = false;
+      })
+    },
+    /**
+     * 新增项目
+     * @param form
+     * @param done
+     */
+    handleSubmit() {
+      this.$refs.form.validate((vaild, done) => {
+        if (vaild) {
+          const form = this.form;
+          form.clusterName = form.$clusterId;
+          createProject(form).then(res => {
+            const data = res.data;
+            if (data.code == 200) {
+              this.$message.success("添加成功");
+              this.handleList('init');
+              setTimeout(() => {
+                this.handleFormClose();
+                done()
+              }, 200)
+            } else {
+              this.$message.error(data.msg);
+            }
+          }).catch(err => {
+            done();
+            console.log(err);
+          })
+          setTimeout(() => {
+            done()
+          }, 2000)
+        }
+      })
+    },
+    /**
+     * 更新
+     */
+    handleUpdate() {
+      this.$refs.form.validate((vaild, done) => {
+        if (vaild) {
+          const form = this.form;
+          form.clusterName = form.$clusterId;
+          updateProject(form).then(res => {
+            const data = res.data;
+            if (data.code == 200) {
+              this.$message.success("更新成功");
+              this.handleList('init');
+              setTimeout(() => {
+                this.handleFormClose();
+                done()
+              }, 200)
+            } else {
+              this.$message.error(data.msg);
+            }
+          }).catch(err => {
+            done();
+            console.log(err);
+          })
+          setTimeout(() => {
+            done()
+          }, 2000)
+        }
+      })
+    },
+    /**
+     * 新增
+     */
+    handleAdd() {
+      this.form.status = 1;
+      this.addForm.type = 'add';
+      this.addForm.dialogVisible = true;
+    },
+    /**
+     * 编辑
+     */
+    handleEdit(row) {
+      this.addForm.type = 'edit';
+      this.addForm.dialogVisible = true;
+      this.form = row;
+    },
+    /**
+     * 关闭
+     */
+    handleFormClose() {
+      // this.handleEmpty()
+      this.addForm.dialogVisible = false;
+    },
+    handleEmpty() {
+      this.$refs.form.resetFields();
+      this.$refs.form.resetForm();
+      this.form.status = 1;
+    },
+    /**
+     * 删除项目
+     * @param row
+     * @param index
+     */
+    handleRowDel(row, index) {
+      this.$confirm("确认删除项目：" + row.projectName + "?", '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteProject(row).then(res => {
+          const data = res.data;
+          if (data.code == 200) {
+            this.$message.success("删除成功");
+            this.handleList('init');
+          } else {
+            this.$message.error(data.msg);
+          }
+        })
+      }).catch(err => {
+        console.log(err);
+      })
+    },
   },
+
 }
 </script>
 <style scoped>
-/deep/ .el-card__body {
-  padding: 10px 20px 20px 20px;
+/deep/ .el-dialog__body {
+  padding: 0px 20px !important;
 }
 </style>
