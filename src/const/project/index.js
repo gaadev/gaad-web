@@ -18,33 +18,32 @@ export default {
     updateBtn: true, //是否显示更新按钮
     cancelBtn: true, //是否显示取消按钮
     column: [{
-        label: "应用名称",
-        prop: "clusterName",
+        label: "项目名称",
+        prop: "projectName",
         fixed: true,
-        search: true,
-        rules: [{
-            required: true,
-            message: "请输入应用名称",
-            trigger: "blur"
-        }]
+        search: true
     }, {
         label: "应用标识",
-        prop: "clusterName",
+        prop: "wsCode",
         fixed: true,
-        search: true,
-        tip: 'Devops工作空间',
-        rules: [{
-            required: true,
-            message: "请输入应用标识",
-            trigger: "blur"
-        }]
+        // search: true,
+        tip: 'Devops工作空间'
     }, {
         label: "状态",
         prop: "status",
         fixed: true,
+        type: 'select',
+        slot: true,
+        dicData: [{
+            label: '正常',
+            value: 1
+        }, {
+            label: '禁止',
+            value: 2
+        }]
     }, {
         label: "描述信息",
-        prop: "remake",
+        prop: "remark",
         fixed: true,
     }]
 }
