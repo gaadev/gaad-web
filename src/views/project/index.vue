@@ -142,7 +142,7 @@ export default {
       pageProjects(params).then(res => {
         const data = res.data;
         if (data.code == 200) {
-          setTimeout(() => {
+          // setTimeout(() => {
             this.tableData = data.data.data;
             if (data.data.data.length > 0) {
               this.page = {
@@ -152,7 +152,7 @@ export default {
               };
             }
             this.tableLoading = false;
-          }, 1000);
+          // }, 1000);
         } else {
           this.tableLoading = false;
         }

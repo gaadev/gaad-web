@@ -1,23 +1,23 @@
 <template>
   <basic-container>
-
   </basic-container>
 </template>
-
 <script>
+
 export default {
-  name: 'serviceForm',
+  name: 'hostSSH',
+  components: {
+  },
   data() {
-    return {
-      activeNames: ['1']
-    }
+    return {}
   },
   created() {
+
   },
   methods: {},
-
 }
 </script>
 <style scoped>
+
 
 </style>

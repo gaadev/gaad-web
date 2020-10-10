@@ -12,7 +12,7 @@ export default {
     emptyBtn: false,
     emptyText: '清空',
     menuPosition: 'center',
-    tabs: true,
+    tabs: false,
     detail: false,
     group: [{
         label: '基础信息',
@@ -21,35 +21,35 @@ export default {
         collapse: true,
         column: [{
             type: 'input',
-            label: '项目名称',
+            label: '服务名称',
             span: 12,
             prop: 'projectName',
             required: true,
             rules: [{
                 required: true,
-                message: '请输入项目名称'
+                message: '请输入服务名称'
             }]
         }, {
             type: 'input',
-            label: '应用标识',
+            label: '服务标识',
             span: 12,
             tip: '必须保持唯一',
             prop: 'wsCode',
             formslot: true,
             rules: [{
                 required: true,
-                message: '请输入应用标识'
+                message: '请输入服务标识'
             }],
             required: true
         }, {
             type: 'select',
-            label: '目标集群',
-            tip: '项目部署集群',
+            label: '所属项目',
+            tip: '所属项目',
             span: 12,
             prop: 'clusterId',
             rules: [{
                 required: true,
-                message: '请选择目标集群'
+                message: '请选择所属项目'
             }],
             props: {
                 label: 'clusterName',
@@ -74,6 +74,22 @@ export default {
             prop: 'status',
             value: 1
         }, {
+            type: 'select',
+            label: '编码类型',
+            dicData: [{
+                label: 'java',
+                value: 'java'
+            }, {
+                label: 'golang',
+                value: 'golang'
+            }, {
+                label: 'vue',
+                value: 'vue'
+            }],
+            formslot: true,
+            span: 12,
+            prop: 'codeType',
+        }, {
             type: 'textarea',
             label: '描述信息',
             span: 24,
@@ -81,13 +97,14 @@ export default {
             prop: 'remark'
         }]
     }, {
-        label: 'git账号配置',
+        label: 'git仓库配置',
         prop: 'git',
         arrow: true,
+        // display: false,
         collapse: true,
         column: [{
             type: 'input',
-            label: '账号',
+            label: '代码仓库',
             span: 12,
             tip: '一般为管理员账号或拥有所有仓库访问权限账号',
             prop: 'gitAccount',
@@ -97,8 +114,8 @@ export default {
                 message: '请输入git账号'
             }]
         }, {
-            type: 'password',
-            label: '密码',
+            type: 'input',
+            label: '分支',
             span: 12,
             prop: 'gitPassword',
             rules: [{
@@ -107,5 +124,12 @@ export default {
             }],
             required: true
         }]
+    }, {
+        label: '参数配置',
+        prop: 'java',
+        arrow: true,
+        display: false,
+        collapse: true,
+        column: []
     }]
 }

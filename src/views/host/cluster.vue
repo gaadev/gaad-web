@@ -15,6 +15,8 @@
         <el-button icon="el-icon-view" :size="size" :type="type" @click="handleAssignHost(row,'view')">查看详情</el-button>
         <el-button icon="el-icon-setting" :size="size" :type="type" @click="handleAssignHost(row,'assign')">分配主机
         </el-button>
+        <el-button icon="el-icon-setting" :size="size" :type="type" @click="handleAssignHost(row,'ssh')">SSH
+        </el-button>
         <el-button icon="el-icon-share" :size="size" :type="type" @click="handleInit(row)">初始化环境</el-button>
       </template>
       <template slot="status" slot-scope="scope">
@@ -26,13 +28,15 @@
                width="60%" append-to-body :before-close="handleHostClose">
       <HostForm v-if="assignHostForm.hostDialogVisible&&assignHostForm.type=='assign'"
                 v-model="assignHostForm.info"></HostForm>
-      <ClusterView v-if="assignHostForm.hostDialogVisible&&assignHostForm.type=='view'" v-model="assignHostForm.info"></ClusterView>
+      <ClusterView v-if="assignHostForm.hostDialogVisible&&assignHostForm.type=='view'"
+                   v-model="assignHostForm.info"></ClusterView>
+<!--      <ssh v-if="assignHostForm.hostDialogVisible&&assignHostForm.type=='ssh'"></ssh>-->
     </el-dialog>
   </basic-container>
 </template>
 <script>
 import tableOption from '@/const/host/cluster'
-import {getClusterPage, addCluster, updateCluster, deleteCluster} from "@/api/host";
+import {getClusterPage, addCluster, updateCluster, deleteCluster, initCluster} from "@/api/host";
 import HostForm from './form/host_form'
 import ClusterView from './form/cluster_view'
 
@@ -119,17 +123,17 @@ export default {
       getClusterPage(params).then(res => {
         const data = res.data;
         if (data.code == 200) {
-          setTimeout(() => {
-            this.tableData = data.data.data;
-            if (data.data.data.length > 0) {
-              this.page = {
-                total: data.data.total,
-                pageSize: data.data.pageRecord,
-                currentPage: data.data.curPage
-              };
-            }
-            this.tableLoading = false;
-          }, 1000);
+          // setTimeout(() => {
+          this.tableData = data.data.data;
+          if (data.data.data.length > 0) {
+            this.page = {
+              total: data.data.total,
+              pageSize: data.data.pageRecord,
+              currentPage: data.data.curPage
+            };
+          }
+          this.tableLoading = false;
+          // }, 200);
         } else {
           this.tableLoading = false;
         }
@@ -209,25 +213,34 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$prompt('验证码', '身份验证', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputValidator: function (val) {
-            if (!val) {
-              return false;
-            }
-            if (val.length == 6) {
-              return true;
-            }
-            return false;
-          },
-          inputErrorMessage: '请输入6位验证码'
-        }).then(({value}) => {
-          this.$message({
-            type: 'success',
-            message: '你输入的验证码是: ' + value
-          });
+        initCluster(row).then(res => {
+          const data = res.data;
+          if (data.code == 200) {
+            this.$message.success("删除成功");
+            this.handleList('init');
+          } else {
+            this.$message.error(data.msg);
+          }
         })
+        // this.$prompt('验证码', '身份验证', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   inputValidator: function (val) {
+        //     if (!val) {
+        //       return false;
+        //     }
+        //     if (val.length == 6) {
+        //       return true;
+        //     }
+        //     return false;
+        //   },
+        //   inputErrorMessage: '请输入6位验证码'
+        // }).then(({value}) => {
+        //   this.$message({
+        //     type: 'success',
+        //     message: '你输入的验证码是: ' + value
+        //   });
+        // })
       })
     },
     /**

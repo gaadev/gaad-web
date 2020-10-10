@@ -19,14 +19,46 @@
         </el-button>
         <el-button type="text" icon="el-icon-delete" plain size="small" @click.stop="handleRowDel(scope.row)">删 除
         </el-button>
-        <el-button type="text" icon="el-icon-setting" plain size="small" >项目配置
+        <el-button type="text" icon="el-icon-setting" plain size="small">项目配置
         </el-button>
       </template>
     </avue-crud>
     <el-dialog :title="addForm.type=='add'?'项目':'修改'"
                :visible.sync="addForm.dialogVisible"
                width="60%" append-to-body :before-close="handleFormClose">
-      <serviceForm></serviceForm>
+      <avue-form ref="form" :option="formOption" v-model="form">
+        <template slot-scope="scope" slot="wsCode">
+          <el-input v-model="form.wsCode" placeholder="请输入应用标识" :disabled="addForm.type=='edit'"></el-input>
+        </template>
+        <template slot-scope="scope" slot="status">
+          <el-select v-model="form.status" placeholder="请选择状态" :disabled="addForm.type=='add'">
+            <el-option
+                v-for="item in scope.column.dicData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
+        </template>
+        <template slot-scope="scope" slot="codeType">
+          <el-select v-model="form.codeType" placeholder="请选择状态" @change="handleChangeSelect">
+            <el-option
+                v-for="item in scope.column.dicData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
+        </template>
+
+        <template slot="menuForm">
+          <el-button type="primary" @click="handleSubmit" icon="el-icon-check" v-if="addForm.type=='add'">提 交
+          </el-button>
+          <el-button type="primary" @click="handleUpdate" icon="el-icon-check" v-else>更 新</el-button>
+          <el-button @click="handleEmpty" icon="el-icon-delete" v-if="addForm.type=='add'">清 空</el-button>
+          <el-button @click="handleFormClose" icon="el-icon-close">取 消</el-button>
+        </template>
+      </avue-form>
     </el-dialog>
   </basic-container>
 </template>
@@ -35,9 +67,10 @@ import tableOption from '@/const/project/service'
 import formOption from '@/const/project/service_form'
 import {createProject, pageProjects, deleteProject, updateProject} from '@/api/project/index'
 import serviceForm from './form/service_form'
+
 export default {
   name: 'service',
-  components:{
+  components: {
     serviceForm
   },
   data() {
@@ -69,6 +102,38 @@ export default {
     this.handleList();
   },
   methods: {
+    /**
+     * 语言选择类型
+     */
+    handleChangeSelect() {
+      const column = [{
+        type: 'input',
+        label: '参数',
+        span: 12,
+        tip: '一般为管理员账号或拥有所有仓库访问权限账号',
+        prop: 'aa',
+        required: true,
+        rules: [{
+          required: true,
+          message: '请输入git账号'
+        }]
+      }, {
+        type: 'input',
+        label: '分支',
+        span: 12,
+        prop: 'vvv',
+        rules: [{
+          required: true,
+          message: '请输入git账号密码'
+        }],
+        required: true
+      }]
+      this.formOption.group[2].column = column;
+      this.formOption.group[2].display = true;
+    },
+    /**
+     * curd 表单开启事件
+     */
     beforeOpen(done, type) {
       this.type = type;
       done()

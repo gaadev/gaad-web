@@ -135,6 +135,19 @@ export const removeNodeForCluster = (params) => request({
     method: 'delete',
     data: params
 })
+/**
+ * 初始化集群
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const initCluster = (params) => request({
+    url: baseUrl + '/cluster/initCluster',
+    method: 'post',
+    data: params
+})
+
+
+
 
 
 

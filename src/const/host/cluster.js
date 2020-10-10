@@ -38,10 +38,10 @@ export default {
             message: "请选择集群类型",
             trigger: "blur"
         }],
-        value: 'Docker Swarm',
+        value: 'DockerSwarm',
         dicData: [{
-            label: 'Docker Swarm',
-            value: "Docker Swarm"
+            label: 'DockerSwarm',
+            value: "DockerSwarm"
         }, {
             label: 'Kubernetes',
             value: "Kubernetes"

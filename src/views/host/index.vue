@@ -106,17 +106,17 @@ export default {
       getHostList(params).then(res => {
         const data = res.data;
         if (data.code == 200) {
-          setTimeout(() => {
-            this.tableData = data.data.data;
-            if (data.data.data.length > 0) {
-              this.page = {
-                total: data.data.total,
-                pageSize: data.data.pageRecord,
-                currentPage: data.data.curPage
-              };
-            }
-            this.tableLoading = false;
-          }, 1000);
+          // setTimeout(() => {
+          this.tableData = data.data.data;
+          if (data.data.data.length > 0) {
+            this.page = {
+              total: data.data.total,
+              pageSize: data.data.pageRecord,
+              currentPage: data.data.curPage
+            };
+          }
+          this.tableLoading = false;
+          // }, 1000);
         } else {
           this.tableLoading = false;
         }
