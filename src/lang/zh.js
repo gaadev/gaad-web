@@ -1,6 +1,6 @@
 export default {
   tip: '提示',
-  title: 'GAAD 一键化自动构建部署解决方案',
+  title: 'UNSUN 运维工具',
   logoutTip: '退出系统, 是否继续?',
   submitText: '确定',
   cancelText: '取消',

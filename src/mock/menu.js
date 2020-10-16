@@ -62,6 +62,12 @@ export default [{
         component: 'components/error-page/403',
         icon: 'fa fa-server',
         children: []
+    }, {
+        label: "问题记录",
+        path: 'question',
+        component: 'views/question/index',
+        icon: 'fa fa-server',
+        children: []
     }]
 }]
 const second = []

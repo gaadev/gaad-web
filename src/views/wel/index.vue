@@ -6,30 +6,34 @@
         <div class="index-about">
           <div class="index-about__row">
             <h1 class="index-about__title">
-              Git as a DevOps(GAAD)
+              UNSUN_JENKINS
+<!--              Git as a DevOps(GAAD)-->
             </h1>
           </div>
           <div class="index-about__row">
             <div class="index-about__strong">
-              <p>为微服务设计而生、
-                数以万计微的服务、
-                支持多种编排平台、
-                多变的个性化配置、
-                一处构建多处部署、
-                原生对命令行支持、
-                多种语言环境构建、
-                批量配置批量构建<br/>
-                我们期望打造一个比 jenkins 更为好用的的部署平台，愿 GAAD 能真真切切为你解决 DevOps 的问题
+              <p>
+                为替代jenkins而开发的运维管理工具
               </p>
+<!--              <p>为微服务设计而生、-->
+<!--                数以万计微的服务、-->
+<!--                支持多种编排平台、-->
+<!--                多变的个性化配置、-->
+<!--                一处构建多处部署、-->
+<!--                原生对命令行支持、-->
+<!--                多种语言环境构建、-->
+<!--                批量配置批量构建<br/>-->
+<!--&lt;!&ndash;                我们期望打造一个比 jenkins 更为好用的的部署平台，愿 GAAD 能真真切切为你解决 DevOps 的问题&ndash;&gt;-->
+<!--              </p>-->
             </div>
           </div>
           <div class="index-about__row">
-            <a href="https://gaad.io/" target="_blank" class="index-about__gaad">官网 (gaad.io)</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-            <a href="https://gitee.com/gaad/gaad" target="_blank" class="index-about__gaad">gitee (gaad)</a>
+<!--            <a href="https://gaad.io/" target="_blank" class="index-about__gaad">官网 (gaad.io)</a> &nbsp;&nbsp;|&nbsp;&nbsp;-->
+<!--            <a href="https://gitee.com/gaad/gaad" target="_blank" class="index-about__gaad">gitee (gaad)</a>-->
           </div>
           <div class="index-about__footer">
-            如果喜欢，请不吝为我们github项目点个星<a href="https://gitee.com/gaad/gaad" target="_blank">star</a>，关注公众号 <a
-              href="http://gaad.io" target="_blank">GAAD</a> 了解更多
+<!--            如果喜欢，请不吝为我们github项目点个星<a href="https://gitee.com/gaad/gaad" target="_blank">star</a>，关注公众号 <a-->
+<!--              href="http://gaad.io" target="_blank">GAAD</a> 了解更多-->
           </div>
         </div>
       </div>

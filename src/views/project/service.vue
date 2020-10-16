@@ -13,13 +13,14 @@
       </template>
       <template slot-scope="scope" slot="menuLeft">
         <el-button type="primary" icon="el-icon-plus" size="small" @click.stop="handleAdd">新 增</el-button>
+        <el-button type="primary" icon="el-icon-video-play" size="small" @click.stop="handleBatchBuild">批量构建</el-button>
       </template>
       <template slot-scope="scope" slot="menu">
         <el-button type="text" icon="el-icon-edit" plain size="small" @click.stop="handleEdit(scope.row)">编 辑
         </el-button>
         <el-button type="text" icon="el-icon-delete" plain size="small" @click.stop="handleRowDel(scope.row)">删 除
         </el-button>
-        <el-button type="text" icon="el-icon-setting" plain size="small">项目配置
+        <el-button type="text" icon="el-icon-video-play" plain size="small" @click.stop="handleDeploy(scope.row)">立即构建
         </el-button>
       </template>
     </avue-crud>
@@ -27,9 +28,13 @@
                :visible.sync="addForm.dialogVisible"
                width="60%" append-to-body :before-close="handleFormClose">
       <avue-form ref="form" :option="formOption" v-model="form">
-        <template slot-scope="scope" slot="wsCode">
-          <el-input v-model="form.wsCode" placeholder="请输入应用标识" :disabled="addForm.type=='edit'"></el-input>
+        <template slot-scope="scope" slot="serviceCode">
+          <el-input v-model="form.serviceCode" placeholder="请输入服务标识" :disabled="addForm.type=='edit'"></el-input>
         </template>
+        <template slot-scope="scope" slot="gitUrl">
+          <el-input v-model="form.gitUrl" placeholder="请输入代码仓库"></el-input>
+        </template>
+
         <template slot-scope="scope" slot="status">
           <el-select v-model="form.status" placeholder="请选择状态" :disabled="addForm.type=='add'">
             <el-option
@@ -40,8 +45,8 @@
             </el-option>
           </el-select>
         </template>
-        <template slot-scope="scope" slot="codeType">
-          <el-select v-model="form.codeType" placeholder="请选择状态" @change="handleChangeSelect">
+        <template slot-scope="scope" slot="lang">
+          <el-select v-model="form.lang" placeholder="请选择状态" @change="handleChangeSelect">
             <el-option
                 v-for="item in scope.column.dicData"
                 :key="item.value"
@@ -50,7 +55,7 @@
             </el-option>
           </el-select>
         </template>
-
+        <!--自定义菜单-->
         <template slot="menuForm">
           <el-button type="primary" @click="handleSubmit" icon="el-icon-check" v-if="addForm.type=='add'">提 交
           </el-button>
@@ -65,7 +70,7 @@
 <script>
 import tableOption from '@/const/project/service'
 import formOption from '@/const/project/service_form'
-import {createProject, pageProjects, deleteProject, updateProject} from '@/api/project/index'
+import {createService, pageService, deleteService, updateService, deployService} from '@/api/project/service'
 import serviceForm from './form/service_form'
 
 export default {
@@ -128,8 +133,30 @@ export default {
         }],
         required: true
       }]
-      this.formOption.group[2].column = column;
-      this.formOption.group[2].display = true;
+      // this.formOption.group[1].column = column;
+      // this.formOption.group[1].display = true;
+    },
+    /**
+     * 构建服务
+     */
+    handleDeploy(row) {
+      this.$confirm("确认构建？", '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deployService(row).then(res => {
+          const data = res.data;
+          if (data.code == 200) {
+            this.$message.success("构建成功");
+            this.handleList('init');
+          } else {
+            this.$message.error(data.msg);
+          }
+        })
+      }).catch(err => {
+        console.log(err);
+      })
     },
     /**
      * curd 表单开启事件
@@ -182,24 +209,24 @@ export default {
       const params = {
         curPage: this.page.currentPage,
         pageRecord: this.page.pageSize,
-        projectName: this.selectParams.projectName,
+        // projectName: this.selectParams.projectName,
         // wsCode: this.selectParams.wsCode
       }
       this.tableLoading = true;
-      pageProjects(params).then(res => {
+      pageService(params).then(res => {
         const data = res.data;
         if (data.code == 200) {
-          setTimeout(() => {
-            this.tableData = data.data.data;
-            if (data.data.data.length > 0) {
-              this.page = {
-                total: data.data.total,
-                pageSize: data.data.pageRecord,
-                currentPage: data.data.curPage
-              };
-            }
-            this.tableLoading = false;
-          }, 1000);
+          // setTimeout(() => {
+          this.tableData = data.data.data;
+          if (data.data.data.length > 0) {
+            this.page = {
+              total: data.data.total,
+              pageSize: data.data.pageRecord,
+              currentPage: data.data.curPage
+            };
+          }
+          this.tableLoading = false;
+          // }, 1000);
         } else {
           this.tableLoading = false;
         }
@@ -216,8 +243,8 @@ export default {
       this.$refs.form.validate((vaild, done) => {
         if (vaild) {
           const form = this.form;
-          form.clusterName = form.$clusterId;
-          createProject(form).then(res => {
+          form.clusterName = form.$projectId;
+          createService(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
               this.$message.success("添加成功");
@@ -247,7 +274,7 @@ export default {
         if (vaild) {
           const form = this.form;
           form.clusterName = form.$clusterId;
-          updateProject(form).then(res => {
+          updateService(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
               this.$message.success("更新成功");
@@ -278,6 +305,12 @@ export default {
       this.addForm.dialogVisible = true;
     },
     /**
+     * 批量构建
+     */
+    handleBatchBuild() {
+      this.$message.info("功能开发中");
+    },
+    /**
      * 编辑
      */
     handleEdit(row) {
@@ -289,7 +322,7 @@ export default {
      * 关闭
      */
     handleFormClose() {
-      // this.handleEmpty()
+      this.handleEmpty()
       this.addForm.dialogVisible = false;
     },
     handleEmpty() {
@@ -303,12 +336,12 @@ export default {
      * @param index
      */
     handleRowDel(row, index) {
-      this.$confirm("确认删除项目：" + row.projectName + "?", '提示', {
+      this.$confirm("确认删除服务：" + row.serviceName + "?", '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteProject(row).then(res => {
+        deleteService(row).then(res => {
           const data = res.data;
           if (data.code == 200) {
             this.$message.success("删除成功");

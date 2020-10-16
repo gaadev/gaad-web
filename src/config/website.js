@@ -2,10 +2,10 @@
  * 全局配置文件
  */
 export default {
-  title: "GAAD",
-  logo: "G",
+  title: "UNSUN",
+  logo: "U",
   key: 'GAAD',//配置主键,目前用于存储
-  indexTitle: 'GAAD',
+  indexTitle: 'UNSUN',
   lockPage: '/lock',
   tokenTime: 6000,//token过期时间
   Authorization: 'Authorization',

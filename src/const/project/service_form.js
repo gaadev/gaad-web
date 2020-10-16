@@ -21,58 +21,27 @@ export default {
         collapse: true,
         column: [{
             type: 'input',
-            label: '服务名称',
-            span: 12,
-            prop: 'projectName',
+            label: '代码仓库',
+            span: 16,
+            prop: 'gitUrl',
+            formslot:true,
             required: true,
             rules: [{
                 required: true,
-                message: '请输入服务名称'
+                message: '请输入代码仓库'
             }]
         }, {
             type: 'input',
-            label: '服务标识',
-            span: 12,
-            tip: '必须保持唯一',
-            prop: 'wsCode',
-            formslot: true,
+            label: '分支',
+            span: 8,
+            prop: 'gitBranch',
+            // formslot:true,
+            required: true,
+            value: 'master',
             rules: [{
                 required: true,
-                message: '请输入服务标识'
-            }],
-            required: true
-        }, {
-            type: 'select',
-            label: '所属项目',
-            tip: '所属项目',
-            span: 12,
-            prop: 'clusterId',
-            rules: [{
-                required: true,
-                message: '请选择所属项目'
-            }],
-            props: {
-                label: 'clusterName',
-                value: 'ID'
-            },
-            dicMethod: 'post',
-            dicUrl: baseUrl + '/cluster/listClusters',
-            required: true
-        }, {
-            type: 'select',
-            label: '状态',
-            disabled: true,
-            dicData: [{
-                label: '正常',
-                value: 1
-            }, {
-                label: '禁止',
-                value: 2
-            }],
-            formslot: true,
-            span: 12,
-            prop: 'status',
-            value: 1
+                message: '请输入分支'
+            }]
         }, {
             type: 'select',
             label: '编码类型',
@@ -88,41 +57,68 @@ export default {
             }],
             formslot: true,
             span: 12,
-            prop: 'codeType',
-        }, {
-            type: 'textarea',
-            label: '描述信息',
-            span: 24,
-            display: true,
-            prop: 'remark'
-        }]
-    }, {
-        label: 'git仓库配置',
-        prop: 'git',
-        arrow: true,
-        // display: false,
-        collapse: true,
-        column: [{
-            type: 'input',
-            label: '代码仓库',
-            span: 12,
-            tip: '一般为管理员账号或拥有所有仓库访问权限账号',
-            prop: 'gitAccount',
-            required: true,
+            prop: 'lang',
+            value: 'java',
             rules: [{
                 required: true,
-                message: '请输入git账号'
-            }]
+                message: '请选择编码类型'
+            }],
         }, {
-            type: 'input',
-            label: '分支',
+            type: 'select',
+            label: '所属项目',
+            tip: '所属项目',
             span: 12,
-            prop: 'gitPassword',
+            prop: 'projectId',
             rules: [{
                 required: true,
-                message: '请输入git账号密码'
+                message: '请选择所属项目'
+            }],
+            props: {
+                label: 'projectName',
+                value: 'ID'
+            },
+            dicMethod: 'post',
+            dicUrl: baseUrl + '/project/listProjects',
+            required: true
+        }, {
+            type: 'input',
+            label: '服务名称',
+            span: 12,
+            tip: '必须保持唯一',
+            prop: 'serviceName',
+            rules: [{
+                required: true,
+                message: '请输入服务名称'
             }],
             required: true
+        }, {
+            type: 'input',
+            label: '服务标识',
+            span: 12,
+            tip: '必须保持唯一',
+            prop: 'serviceCode',
+            formslot: true,
+            rules: [{
+                required: true,
+                message: '请输入服务标识'
+            }],
+            required: true
+        }, {
+            type: 'select',
+            label: '状态',
+            disabled: true,
+            display: false,
+            dicData: [{
+                label: '正常',
+                value: 1
+            }, {
+                label: '禁止',
+                value: 2
+            }],
+            formslot: true,
+            span: 12,
+            prop: 'status',
+            value: 1
         }]
     }, {
         label: '参数配置',

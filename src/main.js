@@ -18,7 +18,7 @@ import i18n from './lang' // Internationalization
 import './styles/common.scss';
 import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
-
+import 'xterm/css/xterm.css'
 
 Vue.use(router)
 Vue.use(VueAxios, axios)
