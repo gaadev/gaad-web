@@ -28,5 +28,8 @@ export default {
 
   },
   methods: {},
+  mounted() {
+    console.log(this.$router);
+  }
 }
 </script>

@@ -1,38 +1,64 @@
 <template>
   <basic-container>
-    <avue-crud :option="option"
-               :data="tableData"
-               :before-open="beforeOpen"
-               @refresh-change="handleRefreshChange"
-               @search-change="handleSearchChange"
-               @current-change="handleCurrentChange"
-               @size-change="handleSizeChange"
-               @row-save="handleRowSave"
-               @row-update="handleRowUpdate"
-               @row-del="handleRowDel"
-               ref="crud" :page.sync="page" :table-loading="tableLoading">
-      <template slot-scope="scope" slot="menuForm">
-        <el-button size="small" @click="$refs.crud.closeDialog()">取消
-        </el-button>
-        <el-button type="primary" size="small" v-if="type=='add'"
-                   @click="$refs.crud.rowSave(scope.row,scope.done,scope.loading)">新增
-        </el-button>
-        <el-button type="primary" size="small" v-if="type=='edit'"
-                   @click="$refs.crud.rowUpdate(scope.row,scope.done,scope.loading)">更新
-        </el-button>
-      </template>
-      <template slot="status" slot-scope="scope">
-        <el-tag :type="scope.row.status==2?'danger':'success'">{{ scope.row.$status }}</el-tag>
-      </template>
-    </avue-crud>
+    <el-tabs type="border-card" v-model="editableTabsValue" closable @tab-remove="removeTab">
+      <el-tab-pane name="1">
+        <span slot="label">主机列表</span>
+        <avue-crud :option="option"
+                   :data="tableData"
+                   :before-open="beforeOpen"
+                   @refresh-change="handleRefreshChange"
+                   @search-change="handleSearchChange"
+                   @current-change="handleCurrentChange"
+                   @size-change="handleSizeChange"
+                   @row-save="handleRowSave"
+                   @row-update="handleRowUpdate"
+                   @row-del="handleRowDel"
+                   ref="crud" :page.sync="page" :table-loading="tableLoading">
+          <template slot-scope="scope" slot="menuForm">
+            <el-button size="small" @click="$refs.crud.closeDialog()">取消
+            </el-button>
+            <el-button type="primary" size="small" v-if="type=='add'"
+                       @click="$refs.crud.rowSave(scope.row,scope.done,scope.loading)">新增
+            </el-button>
+            <el-button type="primary" size="small" v-if="type=='edit'"
+                       @click="$refs.crud.rowUpdate(scope.row,scope.done,scope.loading)">更新
+            </el-button>
+          </template>
+          <template slot-scope="scope" slot="menu">
+            <el-button icon="el-icon-setting" size="small" type="text" @click.stop="handleSSH(scope.row)">SSH
+            </el-button>
+          </template>
+          <template slot="status" slot-scope="scope">
+            <el-tag :type="scope.row.status==2?'danger':'success'">{{ scope.row.$status }}</el-tag>
+          </template>
+          <template slot="status" slot-scope="scope">
+            <el-tag :type="scope.row.status==2?'danger':'success'">{{ scope.row.$status }}</el-tag>
+          </template>
+        </avue-crud>
+      </el-tab-pane>
+      <el-tab-pane
+          :key="item.name"
+          v-for="(item, index) in sshList"
+          :label="item.title"
+          :name="item.name"
+      >
+        <component :is="item.content" :info="item.info"></component>
+<!--        <SSH :info="item.info" ></SSH>-->
+      </el-tab-pane>
+    </el-tabs>
+
   </basic-container>
 </template>
 <script>
 import tableOption from '@/const/host/index';
 import {getHostList, addHost, updateHost, deleteHost} from "@/api/host";
+import SSH from '@/components/ssh/index'
 
 export default {
   name: 'host',
+  components: {
+    SSH
+  },
   data() {
     return {
       type: '',
@@ -42,6 +68,9 @@ export default {
         pagerCount: 0,
         currentPage: 1,
       },
+      sshList: [],
+      editableTabsValue: '1',
+      tabIndex: 1,
       option: tableOption,
       tableData: [],
       selectParams: {
@@ -53,6 +82,22 @@ export default {
     this.handleList()
   },
   methods: {
+    handleSSH(row) {
+      let newTabName = ++this.tabIndex + ''
+      this.sshList.push({
+        title: ':' + row.ip,
+        name: newTabName,
+        content: 'SSH',
+        info: row
+      })
+      this.editableTabsValue = newTabName
+    },
+    removeTab(targetName) {
+      let tabs = this.sshList;
+      let activeName = this.editableTabsValue;
+      this.editableTabsValue = '1';
+      this.sshList = tabs.filter(tab => tab.name !== targetName);
+    },
     beforeOpen(done, type) {
       this.type = type;
       done()
@@ -203,3 +248,10 @@ export default {
 
 }
 </script>
+<style scoped>
+/deep/ .el-tabs--border-card {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+</style>
