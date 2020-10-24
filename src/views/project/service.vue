@@ -244,6 +244,7 @@ export default {
         if (vaild) {
           const form = this.form;
           form.clusterName = form.$projectId;
+          form.devopsOpts={}
           createService(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
@@ -274,6 +275,7 @@ export default {
         if (vaild) {
           const form = this.form;
           form.clusterName = form.$clusterId;
+          form.devopsOpts={}
           updateService(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
