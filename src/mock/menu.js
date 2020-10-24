@@ -1,5 +1,3 @@
-import Mock from 'mockjs'
-
 export default [{
     label: "工作台",
     path: '/dashboard',
@@ -69,6 +67,25 @@ export default [{
         icon: 'fa fa-server',
         children: []
     }]
+}, {
+    label: "插件管理",
+    path: '/plugin',
+    icon: 'fa fa-cloud',
+    children: [{
+        label: "插件列表",
+        path: 'list',
+        component: 'views/plugin/list',
+        icon: 'fa fa-book',
+        children: []
+    }
+    // ,{
+    //     label: "插件市场",
+    //     path: 'market',
+    //     component: 'views/plugin/index',
+    //     icon: 'fa fa-book',
+    //     children: []
+    // }
+    ]
 }]
 const second = []
 
