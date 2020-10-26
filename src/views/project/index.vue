@@ -200,6 +200,9 @@ export default {
         if (vaild) {
           const form = this.form;
           form.clusterName = form.$clusterId;
+          this.$delete(form,'CreatedAt');
+          this.$delete(form,'UpdatedAt');
+          this.$delete(form,'DeletedAt');
           updateProject(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
@@ -261,6 +264,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$delete(row,'CreatedAt');
+        this.$delete(row,'UpdatedAt');
+        this.$delete(row,'DeletedAt');
         deleteProject(row).then(res => {
           const data = res.data;
           if (data.code == 200) {

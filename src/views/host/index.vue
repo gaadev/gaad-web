@@ -207,6 +207,9 @@ export default {
         row.clusterId = 0;
         row.clusterName = row.$clusterId;
       }
+      this.$delete(row,'CreatedAt');
+      this.$delete(row,'UpdatedAt');
+      this.$delete(row,'DeletedAt');
       updateHost(row).then(res => {
         const data = res.data;
         if (data.code == 200) {
@@ -231,6 +234,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$delete(row,'CreatedAt');
+        this.$delete(row,'UpdatedAt');
+        this.$delete(row,'DeletedAt');
         deleteHost(row).then(res => {
           const data = res.data;
           if (data.code == 200) {

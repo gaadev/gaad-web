@@ -166,6 +166,9 @@ export default {
      */
     handleRowUpdate(row, index, done, loading) {
       loading();
+      this.$delete(row,'CreatedAt');
+      this.$delete(row,'UpdatedAt');
+      this.$delete(row,'DeletedAt');
       updateCluster(row).then(res => {
         const data = res.data;
         if (data.code == 200) {
@@ -190,6 +193,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$delete(row,'CreatedAt');
+        this.$delete(row,'UpdatedAt');
+        this.$delete(row,'DeletedAt');
         deleteCluster(row).then(res => {
           const data = res.data;
           if (data.code == 200) {
