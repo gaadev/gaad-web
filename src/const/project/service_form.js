@@ -49,8 +49,11 @@ export default {
                 label: 'java',
                 value: 'java'
             }, {
-                label: 'golang',
-                value: 'golang'
+                label: 'go',
+                value: 'go'
+            }, {
+                label: 'python',
+                value: 'python'
             }, {
                 label: 'vue',
                 value: 'vue'
@@ -70,7 +73,7 @@ export default {
             span: 12,
             prop: 'projectId',
             rules: [{
-                required: true,
+                required: false,
                 message: '请选择所属项目'
             }],
             props: {
@@ -101,6 +104,26 @@ export default {
             rules: [{
                 required: true,
                 message: '请输入服务标识'
+            }],
+            required: true
+        }, {
+            type: 'input',
+            label: 'DockerFile',
+            span: 12,
+            prop: 'dockerfile',
+            rules: [{
+                required: false,
+                message: '请选择dockerfile'
+            }],
+            required: true
+        }, {
+            type: 'input',
+            label: 'Template',
+            span: 12,
+            prop: 'template',
+            rules: [{
+                required: false,
+                message: '请选择template'
             }],
             required: true
         }, {
