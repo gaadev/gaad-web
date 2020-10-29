@@ -106,8 +106,8 @@ export default {
         this.term.onResize(() => {
           const params = {
             type: 'resize',
-            rows: _this.rows,
-            cols: _this.term.cols
+            rows: this.rows,
+            cols: this.term.cols
           }
           this.terminalSocket.send(JSON.stringify(params));
         });

@@ -42,25 +42,27 @@ export default [{
     label: "配置中心",
     path: '/config',
     icon: 'fa fa-cogs',
-    children: [{
-        label: "环境管理",
-        path: 'error',
-        component: 'components/error-page/403',
-        icon: 'fa fa-server',
-        children: []
-    }, {
-        label: "服务配置",
-        path: 'error',
-        component: 'components/error-page/403',
-        icon: 'fa fa-server',
-        children: []
-    }, {
-        label: "应用配置",
-        path: 'error',
-        component: 'components/error-page/403',
-        icon: 'fa fa-server',
-        children: []
-    }, {
+    children: [
+    //     {
+    //     label: "环境管理",
+    //     path: 'error',
+    //     component: 'components/error-page/403',
+    //     icon: 'fa fa-server',
+    //     children: []
+    // }, {
+    //     label: "服务配置",
+    //     path: 'error',
+    //     component: 'components/error-page/403',
+    //     icon: 'fa fa-server',
+    //     children: []
+    // }, {
+    //     label: "应用配置",
+    //     path: 'error',
+    //     component: 'components/error-page/403',
+    //     icon: 'fa fa-server',
+    //     children: []
+    // },
+        {
         label: "问题记录",
         path: 'question',
         component: 'views/question/index',

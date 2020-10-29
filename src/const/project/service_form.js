@@ -24,7 +24,7 @@ export default {
             label: '代码仓库',
             span: 16,
             prop: 'gitUrl',
-            formslot:true,
+            formslot: true,
             required: true,
             rules: [{
                 required: true,
@@ -111,21 +111,13 @@ export default {
             label: 'DockerFile',
             span: 12,
             prop: 'dockerfile',
-            rules: [{
-                required: false,
-                message: '请选择dockerfile'
-            }],
-            required: true
+            // value: 'default'
         }, {
             type: 'input',
             label: 'Template',
             span: 12,
             prop: 'template',
-            rules: [{
-                required: false,
-                message: '请选择template'
-            }],
-            required: true
+            // value: 'default'
         }, {
             type: 'select',
             label: '状态',
@@ -145,10 +137,32 @@ export default {
         }]
     }, {
         label: '参数配置',
-        prop: 'java',
         arrow: true,
-        display: false,
+        prop: 'devopsOpts',
+        display: true,
         collapse: true,
-        column: []
+        column: [{
+            type: 'input',
+            label: '自定义命令',
+            span: 24,
+            prop: 'buildCmds',
+        }, {
+            type: 'input',
+            label: '启动参数',
+            span: 12,
+            prop: 'javaOpts',
+        }, {
+            type: 'select',
+            label: '构建工具',
+            span: 12,
+            prop: 'buildTool',
+            dicData: [{
+                label: 'Maven',
+                value: 'maven'
+            }, {
+                label: 'Gradle',
+                value: 'gradle'
+            }]
+        }]
     }]
 }

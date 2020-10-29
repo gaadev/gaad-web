@@ -23,18 +23,18 @@
           <el-form-item label="备注："> 修复部分<strong>bug</strong></el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col>
-          <el-form-item>
-            <el-button type="success" :loading="true">开始</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!--      <el-row>-->
+      <!--        <el-col>-->
+      <!--          <el-form-item>-->
+      <!--            <el-button type="success" :loading="true">开始</el-button>-->
+      <!--          </el-form-item>-->
+      <!--        </el-col>-->
+      <!--      </el-row>-->
     </el-form>
-    <div class="tip">部署进度</div>
-    <el-steps :active="3" finish-status="success" :align-center="true">
-      <el-step v-for="(item,index) in option" :key="index" :title="item.titel"></el-step>
-    </el-steps>
+    <!--    <div class="tip">部署进度</div>-->
+    <!--    <el-steps :active="3" finish-status="success" :align-center="true">-->
+    <!--      <el-step v-for="(item,index) in option" :key="index" :title="item.titel"></el-step>-->
+    <!--    </el-steps>-->
     <div class="tip">部署日志</div>
     <div style="margin-top: 10px;">
       <div class="wl-task-log__body">
@@ -46,73 +46,50 @@
         <div class="wl-task-log__line" v-for="(item,index) in detailInfo" :key="index">
                     <a></a>
                     <span class="command">{{ item }}</span>
+
         </div>
+        <i v-loading="loading"></i>
       </pre>
+
       </div>
     </div>
   </basic-container>
 </template>
 <script>
 
+import Mock from "mockjs";
+
 export default {
   name: 'deploy',
   data() {
     return {
+      loading: true,
       testInfo: {},
       detailInfo: [{
         context: "[root@127.0.0.1]$ devops run java --git-url \"http://www.gaad.io/foo.git\" foo"
-      }, {
-        context: "➜ 开始使用git拉取代码,当前分支:test"
-      }, {
-        context: "Cloning into '/tmp/devops/unsun/efbf2732-1e41-424f-8085-3f2e16cf8b94'."
-      }, {
-        context: "➜ 开始使用gradle构建项目"
-      }, {
-        context: "BUILD SUCCESSFUL in 3s"
-      }, {
-        context: "➜ 开始java项目镜像的构建"
-      }, {
-        context: "Successfully built 91b29a878ce2"
-      }, {
-        context: "➜ 开始向harbor推送镜像"
-      }, {
-        context: "Successfully push"
-      }, {
-        context: "➜ 开始使用k8s部署服务"
-      }, {
-        context: "spawn bash -c cat /usr/local/devops/deploy/unsun/console-advertisement.yml | ssh root@192.168.10.234 'kubectl apply -f -'"
-      }, {
-        context: "Successfully deploy"
-      }, {
-        context: "[root@127.0.0.1]$"
-      }],
-      option: [{
-        titel: "start deploy"
-      }, {
-        titel: "Deploy"
-      }, {
-        titel: "Successful Deploy"
       }],
       page: 1,
+      timer: '',
     }
   },
   created() {
     // this.getInfo()
   },
+  mounted() {
+    this.timer = setInterval(this.getInfo, 1000);
+  },
   computed: {},
   methods: {
-
     getInfo() {
-      setInterval(() => {
-        // test(this.page).then(res => {
-        //   this.testInfo = res.data.data.data
-        //   this.detailInfo = this.testInfo.split('\n');
-        //   // this.page= this.page + 1;
-        // });
-      }, 1000)
+      const a = Mock.mock({
+        context: '@increment',
+      });
+      this.detailInfo.push(a);
     }
-
   },
+  beforeDestroy() {
+    clearInterval(this.timer);
+  }
 
 }
 </script>

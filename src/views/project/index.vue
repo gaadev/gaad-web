@@ -19,7 +19,9 @@
         </el-button>
         <el-button type="text" icon="el-icon-delete" plain size="small" @click.stop="handleRowDel(scope.row)">删 除
         </el-button>
-        <el-button type="text" icon="el-icon-setting" plain size="small" >项目配置
+        <el-button type="text" icon="el-icon-view" plain size="small" @click.stop="handleSeeSevices(scope.row)">查看服务
+        </el-button>
+        <el-button type="text" icon="el-icon-setting" plain size="small">项目配置
         </el-button>
       </template>
     </avue-crud>
@@ -143,15 +145,15 @@ export default {
         const data = res.data;
         if (data.code == 200) {
           // setTimeout(() => {
-            this.tableData = data.data.data;
-            if (data.data.data.length > 0) {
-              this.page = {
-                total: data.data.total,
-                pageSize: data.data.pageRecord,
-                currentPage: data.data.curPage
-              };
-            }
-            this.tableLoading = false;
+          this.tableData = data.data.data;
+          if (data.data.data.length > 0) {
+            this.page = {
+              total: data.data.total,
+              pageSize: data.data.pageRecord,
+              currentPage: data.data.curPage
+            };
+          }
+          this.tableLoading = false;
           // }, 1000);
         } else {
           this.tableLoading = false;
@@ -200,9 +202,9 @@ export default {
         if (vaild) {
           const form = this.form;
           form.clusterName = form.$clusterId;
-          this.$delete(form,'CreatedAt');
-          this.$delete(form,'UpdatedAt');
-          this.$delete(form,'DeletedAt');
+          this.$delete(form, 'CreatedAt');
+          this.$delete(form, 'UpdatedAt');
+          this.$delete(form, 'DeletedAt');
           updateProject(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
@@ -264,9 +266,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$delete(row,'CreatedAt');
-        this.$delete(row,'UpdatedAt');
-        this.$delete(row,'DeletedAt');
+        this.$delete(row, 'CreatedAt');
+        this.$delete(row, 'UpdatedAt');
+        this.$delete(row, 'DeletedAt');
         deleteProject(row).then(res => {
           const data = res.data;
           if (data.code == 200) {
@@ -280,6 +282,18 @@ export default {
         console.log(err);
       })
     },
+    /**
+     * 查看项目对应的服务
+     * @param row
+     */
+    handleSeeSevices(row) {
+      this.$router.push({
+        path: "/deploy/service",
+        query: {
+          projectId: row.ID
+        }
+      });
+    }
   },
 
 }

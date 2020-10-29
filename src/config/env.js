@@ -7,8 +7,8 @@ let iconfontUrl = `//at.alicdn.com/t/font_$key.css`;
 let codeUrl = `${baseUrl}/code`
 const env = process.env
 if (env.NODE_ENV == 'development') {
-    baseUrl = `http://localhost:7779`; // 开发环境地址
-    wsUrl = 'ws://localhost:7779'
+    baseUrl = `http://192.168.10.90:7779`; // 开发环境地址
+    wsUrl = 'ws://192.168.10.90:7779'
 } else if (env.NODE_ENV == 'production') {
     baseUrl = ``; //生产环境地址
     wsUrl = ``; //生产环境地址

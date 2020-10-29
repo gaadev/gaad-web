@@ -2,6 +2,7 @@
   <basic-container>
     <avue-crud :option="option"
                :data="tableData"
+               :search.sync="selectParams"
                :before-open="beforeOpen"
                @refresh-change="handleRefreshChange"
                @search-change="handleSearchChange"
@@ -21,6 +22,8 @@
         <el-button type="text" icon="el-icon-delete" plain size="small" @click.stop="handleRowDel(scope.row)">删 除
         </el-button>
         <el-button type="text" icon="el-icon-video-play" plain size="small" @click.stop="handleDeploy(scope.row)">立即构建
+        </el-button>
+        <el-button type="text" icon="el-icon-view" plain size="small" @click.stop="handleDeployRecord(scope.row)">构建记录
         </el-button>
       </template>
     </avue-crud>
@@ -65,6 +68,12 @@
         </template>
       </avue-form>
     </el-dialog>
+
+    <el-dialog title="日志查看"
+               :visible.sync="deployForm.dialogVisible"
+               width="80%" append-to-body :before-close="handleDeployFormClose">
+      <DeployLog v-if="deployForm.dialogVisible"></DeployLog>
+    </el-dialog>
   </basic-container>
 </template>
 <script>
@@ -72,11 +81,12 @@ import tableOption from '@/const/project/service'
 import formOption from '@/const/project/service_form'
 import {createService, pageService, deleteService, updateService, deployService} from '@/api/project/service'
 import serviceForm from './form/service_form'
+import DeployLog from "./deploy"
 
 export default {
   name: 'service',
   components: {
-    serviceForm
+    serviceForm, DeployLog
   },
   data() {
     return {
@@ -87,19 +97,64 @@ export default {
         pagerCount: 0,
         currentPage: 1,
       },
-      form: {
+      initForm: {
         status: 1,
+        lang: 'java',
+        gitBranch: 'master'
       },
+      form: {},
       addForm: {
         dialogVisible: false,
         type: 'add'
       },
+      selectLang: 'java',  //选中的语言
       option: tableOption,
       tableData: [],
       formOption: formOption,
       selectParams: {
-        projectName: null,
-        wsCode: null,
+        projectId: this.$route.query.projectId,
+        serviceName: null,
+      },
+      deployForm: {
+        dialogVisible: false,
+      },
+      fieldList: {
+        java: [{
+          type: 'input',
+          label: '自定义命令',
+          span: 24,
+          prop: 'buildCmds',
+        }, {
+          type: 'input',
+          label: '启动参数',
+          span: 12,
+          prop: 'javaOpts',
+        }, {
+          type: 'select',
+          label: '构建工具',
+          span: 12,
+          prop: 'buildTool',
+          dicData: [{
+            label: 'Maven',
+            value: 'maven'
+          }, {
+            label: 'Gradle',
+            value: 'gradle'
+          }]
+        }],
+        vue: [{
+          type: 'input',
+          label: '自定义命令',
+          span: 24,
+          prop: 'buildCmds',
+        }, {
+          type: 'input',
+          label: '构建环境',
+          span: 24,
+          prop: 'buildEnv',
+        }],
+        go: [],
+        python: []
       }
     }
   },
@@ -110,31 +165,28 @@ export default {
     /**
      * 语言选择类型
      */
-    handleChangeSelect() {
-      const column = [{
-        type: 'input',
-        label: '参数',
-        span: 12,
-        tip: '一般为管理员账号或拥有所有仓库访问权限账号',
-        prop: 'aa',
-        required: true,
-        rules: [{
-          required: true,
-          message: '请输入git账号'
-        }]
-      }, {
-        type: 'input',
-        label: '分支',
-        span: 12,
-        prop: 'vvv',
-        rules: [{
-          required: true,
-          message: '请输入git账号密码'
-        }],
-        required: true
-      }]
-      // this.formOption.group[1].column = column;
-      // this.formOption.group[1].display = true;
+    handleChangeSelect(value, type) {
+      if (type !== "editInit") {
+        this.removeParam(this.selectLang);
+      }
+      let column = [];
+      if (value == 'java') {
+        column = this.fieldList.java;
+      } else if (value == 'vue') {
+        column = this.fieldList.vue;
+      }
+      this.selectLang = value;
+      this.formOption.group[1].column = column;
+      this.formOption.group[1].display = true;
+    },
+    /**
+     * 删除表单里面的值
+     */
+    removeParam(lang) {
+      const column = this.fieldList[lang];
+      column.forEach(s => {
+        this.$delete(this.form, s.prop);
+      });
     },
     /**
      * 构建服务
@@ -145,14 +197,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$delete(row,'CreatedAt');
-        this.$delete(row,'UpdatedAt');
-        this.$delete(row,'DeletedAt');
+        this.$delete(row, 'CreatedAt');
+        this.$delete(row, 'UpdatedAt');
+        this.$delete(row, 'DeletedAt');
         deployService(row).then(res => {
           const data = res.data;
           if (data.code == 200) {
             this.$message.success("构建成功");
             this.handleList('init');
+            this.deployForm.dialogVisible = true;
+
           } else {
             this.$message.error(data.msg);
           }
@@ -160,6 +214,9 @@ export default {
       }).catch(err => {
         console.log(err);
       })
+    },
+    handleDeployRecord(row) {
+      this.$message.success("奥哦,页面不见了。。。");
     },
     /**
      * curd 表单开启事件
@@ -180,8 +237,8 @@ export default {
      */
     handleSearchChange(params, done) {
       this.page.currentPage = 1;
-      this.selectParams.projectName = params.projectName;
-      // this.selectParams.wsCode = params.wsCode;
+      this.selectParams.serviceName = params.serviceName;
+      this.selectParams.projectId = params.projectId;
       this.handleList();
       setTimeout(() => {
         done();
@@ -212,8 +269,8 @@ export default {
       const params = {
         curPage: this.page.currentPage,
         pageRecord: this.page.pageSize,
-        // projectName: this.selectParams.projectName,
-        // wsCode: this.selectParams.wsCode
+        serviceName: this.selectParams.serviceName,
+        projectId: this.selectParams.projectId
       }
       this.tableLoading = true;
       pageService(params).then(res => {
@@ -238,7 +295,30 @@ export default {
       })
     },
     /**
-     * 新增项目
+     * 参数处理转换成json字符串
+     */
+    paramsCovtorToString(form) {
+      const columnList = this.fieldList[form.lang];
+      const devoopsOpts = {};
+      columnList.forEach(s => {
+        devoopsOpts[s.prop] = form[s.prop];
+      });
+      return JSON.stringify(devoopsOpts);
+    },
+    /**
+     * 将json字符串转换成对象
+     */
+    paramsCovtorToObject() {
+      const columnList = this.fieldList[this.form.lang];
+      if (this.form.devopsOpts) {
+        const params = JSON.parse(this.form.devopsOpts);
+        columnList.forEach(s => {
+          this.form[s.prop] = params[s.prop];
+        });
+      }
+    },
+    /**
+     * 新增服务
      * @param form
      * @param done
      */
@@ -246,8 +326,8 @@ export default {
       this.$refs.form.validate((vaild, done) => {
         if (vaild) {
           const form = this.form;
-          form.clusterName = form.$projectId;
-          form.devopsOpts={}
+          form.projectName = form.$projectId;
+          form.devopsOpts = this.paramsCovtorToString(form);
           createService(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
@@ -278,10 +358,11 @@ export default {
         if (vaild) {
           const form = this.form;
           form.clusterName = form.$clusterId;
-          form.devopsOpts={}
-          this.$delete(form,'CreatedAt');
-          this.$delete(form,'UpdatedAt');
-          this.$delete(form,'DeletedAt');
+          form.devopsOpts = {}
+          this.$delete(form, 'CreatedAt');
+          this.$delete(form, 'UpdatedAt');
+          this.$delete(form, 'DeletedAt');
+          form.devopsOpts = this.paramsCovtorToString(form);
           updateService(form).then(res => {
             const data = res.data;
             if (data.code == 200) {
@@ -308,7 +389,8 @@ export default {
      * 新增
      */
     handleAdd() {
-      this.form.status = 1;
+      this.form = this.initForm;
+      this.handleChangeSelect(this.form.lang)
       this.addForm.type = 'add';
       this.addForm.dialogVisible = true;
     },
@@ -321,22 +403,27 @@ export default {
     /**
      * 编辑
      */
-    handleEdit(row) {
+    async handleEdit(row) {
+      //触发改变
+      this.handleChangeSelect(row.lang, "editInit");
+      this.form = row;
+      this.paramsCovtorToObject();
       this.addForm.type = 'edit';
       this.addForm.dialogVisible = true;
-      this.form = row;
     },
     /**
      * 关闭
      */
     handleFormClose() {
-      this.handleEmpty()
+      this.handleEmpty();
       this.addForm.dialogVisible = false;
+    },
+    handleDeployFormClose() {
+      this.deployForm.dialogVisible = false;
     },
     handleEmpty() {
       this.$refs.form.resetFields();
       this.$refs.form.resetForm();
-      this.form.status = 1;
     },
     /**
      * 删除项目
@@ -349,9 +436,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$delete(row,'CreatedAt');
-        this.$delete(row,'UpdatedAt');
-        this.$delete(row,'DeletedAt');
+        this.$delete(row, 'CreatedAt');
+        this.$delete(row, 'UpdatedAt');
+        this.$delete(row, 'DeletedAt');
         deleteService(row).then(res => {
           const data = res.data;
           if (data.code == 200) {
