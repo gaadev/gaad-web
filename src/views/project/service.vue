@@ -27,12 +27,13 @@
         </el-button>
       </template>
     </avue-crud>
-    <el-dialog :title="addForm.type=='add'?'项目':'修改'"
+    <!--新增修改-->
+    <el-dialog :title="addForm.type=='add'?'新增':'修改'"
                :visible.sync="addForm.dialogVisible"
                width="60%" append-to-body :before-close="handleFormClose">
       <avue-form ref="form" :option="formOption" v-model="form">
         <template slot-scope="scope" slot="serviceCode">
-          <el-input v-model="form.serviceCode" placeholder="请输入服务标识" :disabled="addForm.type=='edit'"></el-input>
+          <el-input v-model="form.serviceCode" placeholder="请输入服务标识"></el-input>
         </template>
         <template slot-scope="scope" slot="gitUrl">
           <el-input v-model="form.gitUrl" placeholder="请输入代码仓库"></el-input>
@@ -68,7 +69,7 @@
         </template>
       </avue-form>
     </el-dialog>
-
+    <!--查看日志dialog-->
     <el-dialog title="日志查看"
                :visible.sync="deployForm.dialogVisible"
                width="80%" append-to-body :before-close="handleDeployFormClose">
@@ -112,7 +113,7 @@ export default {
       tableData: [],
       formOption: formOption,
       selectParams: {
-        projectId: this.$route.query.projectId,
+        projectId: null,
         serviceName: null,
       },
       deployForm: {
@@ -157,6 +158,9 @@ export default {
         python: []
       }
     }
+  },
+  mounted() {
+    this.selectParams.projectId = this.$route.query.projectId;
   },
   created() {
     this.handleList();
@@ -203,10 +207,11 @@ export default {
         deployService(row).then(res => {
           const data = res.data;
           if (data.code == 200) {
-            this.$message.success("构建成功");
+            // this.$message.success("构建成功");
             this.handleList('init');
-            this.deployForm.dialogVisible = true;
-
+            setTimeout(() => {
+              this.deployForm.dialogVisible = true;
+            }, 200);
           } else {
             this.$message.error(data.msg);
           }
@@ -237,8 +242,8 @@ export default {
      */
     handleSearchChange(params, done) {
       this.page.currentPage = 1;
-      this.selectParams.serviceName = params.serviceName;
-      this.selectParams.projectId = params.projectId;
+      this.selectParams.serviceName = params.serviceName.trim();
+      this.selectParams.projectId = params.projectId.trim();
       this.handleList();
       setTimeout(() => {
         done();
@@ -460,4 +465,5 @@ export default {
 /deep/ .el-dialog__body {
   padding: 0px 20px !important;
 }
+
 </style>

@@ -2,8 +2,8 @@
   <basic-container>
     <!--    <div><p>项目AAAA的构建文件</p></div>-->
     <el-container>
-      <el-aside width="30%" style="min-height: 743px;">
-        <avue-tree :option="treeOption" :data="treeData" @node-click="nodeClick"></avue-tree>
+      <el-aside width="20%" style="min-height: 743px;border-right: 1px solid #E4E7ED;">
+        <avue-tree :option="treeOption" :data="treeData"></avue-tree>
       </el-aside>
       <el-container>
         <el-header height="50px">
@@ -17,24 +17,24 @@
               <el-button icon="el-icon-close" size="small">取 消</el-button>
             </div>
             <el-select style="right: 0px;position:relative;">
-              <!--              <el-option-->
-              <!--                  v-for="item in options"-->
-              <!--                  :key="item.value"-->
-              <!--                  :label="item.label"-->
-              <!--                  :value="item.value">-->
-              <!--              </el-option>-->
+              <!--                            <el-option-->
+              <!--                                v-for="item in options"-->
+              <!--                                :key="item.value"-->
+              <!--                                :label="item.label"-->
+              <!--                                :value="item.value">-->
+              <!--                            </el-option>-->
             </el-select>
           </div>
         </el-header>
         <el-main>
-          <editor v-model="content" @init="editorInit" :lang="language" :options="options" :theme="theme"
-                  ref="myEditor"></editor>
+          <Editor :editorConfig="this.editConfig"></Editor>
         </el-main>
       </el-container>
     </el-container>
   </basic-container>
 </template>
 <script>
+import Editor from '@/components/editor/index'
 
 export default {
   name: 'editorForm',
@@ -42,16 +42,29 @@ export default {
     return {
       treeData: [{
         value: 0,
-        label: '一级部门',
-        children: [
-          {
-            value: 1,
-            label: '一级部门1',
-          }
-        ]
+        label: 'dockerfile文件',
+        children: [{
+          value: 1,
+          label: 'dockerfile',
+        }, {
+          value: 2,
+          label: 'jpg-cool-dockerfile',
+        }]
+      }, {
+        value: 1,
+        label: 'template文件',
+        children: [{
+          value: 1,
+          label: 'template',
+        }, {
+          value: 2,
+          label: 'zull-template',
+        }]
       }],
       treeOption: {
         defaultExpandAll: true,
+        filter: false,
+        addBtn: false,
         formOption: {
           labelWidth: 100,
           column: [{
@@ -66,33 +79,20 @@ export default {
           children: 'children'
         }
       },
-      language: 'yaml',
-      theme: 'xcode',
-      content: null,
-      options: {/*vue2-ace-editor编辑器配置自动补全等*/
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true,/*自动补全*/
-        // readOnly: true
-      },
+      editConfig: {
+        language: 'yaml',
+        theme: 'twilight',
+        content: null
+      }
     }
   },
   components: {
-    editor: require('vue2-ace-editor'),
+    Editor
   },
   created() {
 
   },
   methods: {
-    editorInit: function () {
-      require('brace/ext/language_tools') //language extension prerequsite...
-      require('brace/mode/yaml')
-      require('brace/snippets/yaml')      //snippet
-      require('brace/mode/dockerfile')    //language
-      require('brace/snippets/dockerfile')      //snippet
-      require('brace/theme/twilight')
-      require('brace/theme/xcode')
-    },
     handleChange() {
       let editor = this.$refs.myEditor.editor
       editor.setReadOnly(false);

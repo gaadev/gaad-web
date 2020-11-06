@@ -2,13 +2,13 @@
 
 let baseUrl = '';
 let wsUrl = '';
-let iconfontVersion = ['567566_pwc3oottzol'];
+let iconfontVersion = ['567566_pwc3oottzol','2183860_nt1gvbnh4u'];
 let iconfontUrl = `//at.alicdn.com/t/font_$key.css`;
 let codeUrl = `${baseUrl}/code`
 const env = process.env
 if (env.NODE_ENV == 'development') {
-    baseUrl = `http://192.168.10.90:7779`; // 开发环境地址
-    wsUrl = 'ws://192.168.10.90:7779'
+    baseUrl = `http://192.168.10.228:7779`; // 开发环境地址
+    wsUrl = 'ws://192.168.10.218:7779'
 } else if (env.NODE_ENV == 'production') {
     baseUrl = ``; //生产环境地址
     wsUrl = ``; //生产环境地址

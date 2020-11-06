@@ -4,6 +4,7 @@
       <template slot="menu" slot-scope="scope">
         <span @click.stop="tip(scope.row,scope.index)">install</span>
         <span @click.stop="tip(scope.row,scope.index)">uninstall</span>
+        <span @click.stop="tip(scope.row,scope.index)">查看配置</span>
       </template>
     </avue-card>
     <el-dialog :title="addForm.type=='add'?'新增':'修改'"

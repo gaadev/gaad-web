@@ -26,6 +26,12 @@ export default [{
     path: '/deploy',
     icon: 'fa fa-cloud',
     children: [{
+        label: "环境管理",
+        path: 'env',
+        component: 'views/project/env',
+        icon: 'fa fa-book',
+        children: []
+    }, {
         label: "项目管理",
         path: 'project',
         component: 'views/project/index',
@@ -43,32 +49,32 @@ export default [{
     path: '/config',
     icon: 'fa fa-cogs',
     children: [
-    //     {
-    //     label: "环境管理",
-    //     path: 'error',
-    //     component: 'components/error-page/403',
-    //     icon: 'fa fa-server',
-    //     children: []
-    // }, {
-    //     label: "服务配置",
-    //     path: 'error',
-    //     component: 'components/error-page/403',
-    //     icon: 'fa fa-server',
-    //     children: []
-    // }, {
-    //     label: "应用配置",
-    //     path: 'error',
-    //     component: 'components/error-page/403',
-    //     icon: 'fa fa-server',
-    //     children: []
-    // },
+        //     {
+        //     label: "环境管理",
+        //     path: 'error',
+        //     component: 'components/error-page/403',
+        //     icon: 'fa fa-server',
+        //     children: []
+        // }, {
+        //     label: "服务配置",
+        //     path: 'error',
+        //     component: 'components/error-page/403',
+        //     icon: 'fa fa-server',
+        //     children: []
+        // }, {
+        //     label: "应用配置",
+        //     path: 'error',
+        //     component: 'components/error-page/403',
+        //     icon: 'fa fa-server',
+        //     children: []
+        // },
         {
-        label: "问题记录",
-        path: 'question',
-        component: 'views/question/index',
-        icon: 'fa fa-server',
-        children: []
-    }]
+            label: "问题记录",
+            path: 'question',
+            component: 'views/question/index',
+            icon: 'fa fa-server',
+            children: []
+        }]
 }, {
     label: "插件管理",
     path: '/plugin',
@@ -80,13 +86,13 @@ export default [{
         icon: 'fa fa-book',
         children: []
     }
-    // ,{
-    //     label: "插件市场",
-    //     path: 'market',
-    //     component: 'views/plugin/index',
-    //     icon: 'fa fa-book',
-    //     children: []
-    // }
+        // ,{
+        //     label: "插件市场",
+        //     path: 'market',
+        //     component: 'views/plugin/index',
+        //     icon: 'fa fa-book',
+        //     children: []
+        // }
     ]
 }]
 const second = []

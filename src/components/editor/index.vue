@@ -1,28 +1,30 @@
 <template>
-    <editorAAA v-model="content" @init="editorInit" :lang="language" :options="options"
-            :theme="theme"
-            ref="myEditor" height="100"
-               width="100%"></editorAAA>
+  <editorAAA v-model="content" @init="editorInit" :lang="language" :options="options"
+             :theme="theme"
+             ref="myEditor" height="100%"
+             width="100%"></editorAAA>
 </template>
 <script>
 
 export default {
   name: 'editor',
   props: {
-    // value: {
-    //   type: String,
-    //   default: null
-    // }
+    editorConfig: {
+      type: Object,
+      default: {}
+    }
   },
   watch: {
-    // value: function (n, o) {
-    //   this.content = this.value;
-    // }
+    value: function (n, o) {
+      this.content = this.value;
+    }
   },
   created() {
-    // this.language = this.editorConfig.language;
-    // this.theme = this.editorConfig.theme;
-    // this.content = this.value;
+    if(this.editorConfig) {
+      this.language = this.editorConfig.language;
+      this.theme = this.editorConfig.theme;
+      this.content = this.value;
+    }
   },
   data() {
     return {
