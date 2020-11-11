@@ -1,6 +1,6 @@
 export default {
     border: true,
-    index: true,
+    index: false,
     indexLabel: '序号',
     labelWidth: 120,
     selection: true,

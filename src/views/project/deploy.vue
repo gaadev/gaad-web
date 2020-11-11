@@ -56,8 +56,7 @@
   </basic-container>
 </template>
 <script>
-
-import Mock from "mockjs";
+import {lookLog} from '@/api/project/service'
 
 export default {
   name: 'deploy',
@@ -81,10 +80,8 @@ export default {
   computed: {},
   methods: {
     getInfo() {
-      const a = Mock.mock({
-        context: '@increment',
-      });
-      this.detailInfo.push(a);
+      // this.detailInfo.push(a);
+      lookLog()
     }
   },
   beforeDestroy() {

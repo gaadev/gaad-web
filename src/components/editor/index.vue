@@ -20,7 +20,7 @@ export default {
     }
   },
   created() {
-    if(this.editorConfig) {
+    if (this.editorConfig) {
       this.language = this.editorConfig.language;
       this.theme = this.editorConfig.theme;
       this.content = this.value;
@@ -49,6 +49,8 @@ export default {
       require('brace/snippets/yaml')      //snippet
       require('brace/mode/dockerfile')    //language
       require('brace/snippets/dockerfile')      //snippet
+      require('brace/mode/markdown')    //language
+      require('brace/snippets/markdown')      //snippet
       require('brace/mode/json')    //language
       require('brace/snippets/json')      //snippet
       require('brace/theme/twilight')

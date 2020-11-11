@@ -27,8 +27,8 @@ export default {
         status: '未解决'
       }, {
         question: "缺少构建记录",
-        date: '2020-10-27',
-        status: '未解决'
+        date: '2020-10-27 解决时间：2020-11-11',
+        status: '已解决'
       }, {
         question: "插件管理相关设计",
         date: '2020-10-28',
@@ -39,8 +39,8 @@ export default {
         status: '未解决'
       }, {
         question: "服务管理页面:无查看当前构建日志",
-        date: '2020-10-29',
-        status: '未解决'
+        date: '2020-10-29 解决时间：2020-11-11',
+        status: '已解决'
       }]
     }
   },

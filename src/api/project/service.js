@@ -53,6 +53,29 @@ export const deployService = (params) => request({
     method: 'post',
     data: params
 })
+/**
+ * look look  log
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const lookLog = (params) => request({
+    url: baseUrl + '/service/display',
+    method: 'get',
+    params: params
+})
+/**
+ * look look deploy record
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const lookDeployRecord = (params) => request({
+    url: baseUrl + '/service/listDevops',
+    method: 'get',
+    params: params
+})
+
+
+
 
 
 

@@ -28,6 +28,7 @@ export default {
       rows: 80,
       cols: 100,
       fitAddon: null,
+      timer: null,
     }
   },
   created() {
@@ -79,7 +80,14 @@ export default {
   methods: {
     runRealTerminal() {
       console.log('webSocket is finished')
-      //todo 心跳检测
+      this.timer= setInterval(this.sendHeart, 3000);
+    },
+    sendHeart() {
+      const params = {
+        type: 'heartbeat',
+        data: ''
+      }
+      this.terminalSocket.send(JSON.stringify(params));
     },
     errorRealTerminal() {
       console.log('error')
@@ -117,6 +125,7 @@ export default {
     }
   },
   beforeDestroy() {
+    clearInterval(this.timer);
     if (this.terminalSocket) {
       this.terminalSocket.close();
     }

@@ -70,11 +70,22 @@
       </avue-form>
     </el-dialog>
     <!--查看日志dialog-->
-    <el-dialog title="日志查看"
+    <el-drawer title="日志查看"
                :visible.sync="deployForm.dialogVisible"
-               width="80%" append-to-body :before-close="handleDeployFormClose">
-      <DeployLog v-if="deployForm.dialogVisible"></DeployLog>
-    </el-dialog>
+               direction="rtl"
+               size="50%"
+               append-to-body :before-close="handleDeployFormClose">
+      <DeployLog v-if="deployForm.dialogVisible" :deploy-info="deployForm.deployInfo"></DeployLog>
+    </el-drawer>
+    <el-drawer
+        title="构建记录"
+        :visible.sync="deployRecord.dialogVisible"
+        direction="rtl"
+        size="50%"
+        append-to-body
+        :before-close="handleDeployRecordClose">
+      <DeployRecord v-if="deployRecord.dialogVisible" :serviceId="deployRecord.serviceId"></DeployRecord>
+    </el-drawer>
   </basic-container>
 </template>
 <script>
@@ -82,12 +93,13 @@ import tableOption from '@/const/project/service'
 import formOption from '@/const/project/service_form'
 import {createService, pageService, deleteService, updateService, deployService} from '@/api/project/service'
 import serviceForm from './form/service_form'
-import DeployLog from "./deploy"
+import DeployLog from "./form/deploy_log"
+import DeployRecord from "./form/deploy_record"
 
 export default {
   name: 'service',
   components: {
-    serviceForm, DeployLog
+    serviceForm, DeployLog, DeployRecord
   },
   data() {
     return {
@@ -116,8 +128,13 @@ export default {
         projectId: null,
         serviceName: null,
       },
+      deployRecord: {
+        dialogVisible: false,
+        serviceId: null
+      },
       deployForm: {
         dialogVisible: false,
+        deployInfo: {}
       },
       fieldList: {
         java: [{
@@ -210,18 +227,33 @@ export default {
             // this.$message.success("构建成功");
             this.handleList('init');
             setTimeout(() => {
+              const deployInfo = {
+                serviceId: row.ID,
+                start: 1
+              }
+              this.deployForm.deployInfo = deployInfo;
               this.deployForm.dialogVisible = true;
             }, 200);
           } else {
             this.$message.error(data.msg);
           }
         })
-      }).catch(err => {
-        console.log(err);
+      }).catch(() => {
       })
     },
+    /**
+     * open deploy record dialog
+     */
     handleDeployRecord(row) {
-      this.$message.success("奥哦,页面不见了。。。");
+      this.deployRecord.serviceId = row.ID;
+      this.deployRecord.dialogVisible = true;
+    },
+    /**
+     * close deploy record dialog
+     */
+    handleDeployRecordClose() {
+      this.deployRecord.serviceId = null;
+      this.deployRecord.dialogVisible = false;
     },
     /**
      * curd 表单开启事件
@@ -233,7 +265,7 @@ export default {
     /**
      * 刷新按钮触发该事件
      */
-    handleRefreshChange(page) {
+    handleRefreshChange() {
       this.page.currentPage = 1;
       this.handleList();
     },
@@ -242,8 +274,8 @@ export default {
      */
     handleSearchChange(params, done) {
       this.page.currentPage = 1;
-      this.selectParams.serviceName = params.serviceName.trim();
-      this.selectParams.projectId = params.projectId.trim();
+      this.selectParams.serviceName = params.serviceName;
+      this.selectParams.projectId = params.projectId;
       this.handleList();
       setTimeout(() => {
         done();
@@ -295,7 +327,7 @@ export default {
         } else {
           this.tableLoading = false;
         }
-      }).catch(err => {
+      }).catch(() => {
         this.tableLoading = false;
       })
     },
@@ -424,6 +456,7 @@ export default {
       this.addForm.dialogVisible = false;
     },
     handleDeployFormClose() {
+      this.deployForm.deployInfo = {};
       this.deployForm.dialogVisible = false;
     },
     handleEmpty() {
@@ -435,7 +468,7 @@ export default {
      * @param row
      * @param index
      */
-    handleRowDel(row, index) {
+    handleRowDel(row) {
       this.$confirm("确认删除服务：" + row.serviceName + "?", '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -466,4 +499,7 @@ export default {
   padding: 0px 20px !important;
 }
 
+/deep/ .el-drawer__body {
+  overflow: auto;
+}
 </style>

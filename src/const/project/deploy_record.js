@@ -3,9 +3,9 @@ export default {
     index: false,
     indexLabel: '序号',
     labelWidth: 120,
-    selection: true,
+    selection: false,
     menuBtn: true,
-    menuWidth: 300,
+    // menuWidth: 300,
     align: 'center',
     menuAlign: 'center',
     columnBtn: false, //是否显示显影按钮
@@ -14,20 +14,29 @@ export default {
     addTitle: '新增项目',//添加弹窗标题
     editBtn: false,  //是否显示编辑按钮
     viewBtn: false, //是否显示查看按钮
-    saveBtn: true,  //是否显示提交按钮
-    updateBtn: true, //是否显示更新按钮
-    cancelBtn: true, //是否显示取消按钮
+    saveBtn: false,  //是否显示提交按钮
+    updateBtn: false, //是否显示更新按钮
+    cancelBtn: false, //是否显示取消按钮
+    refreshBtn: false,
     column: [{
-        label: "项目名称",
-        prop: "projectName",
-        fixed: true,
-        search: true
+        label: "构建版本",
+        prop: "deployNum",
+        fixed: true
     }, {
-        label: "应用标识",
-        prop: "wsCode",
+        label: "服务名称",
+        prop: "serviceName",
         fixed: true,
-        // search: true,
-        tip: 'Devops工作空间'
+    }, {
+        label: "服务标识",
+        prop: "serviceCode",
+        fixed: true,
+    }, {
+        label: "构建时间",
+        prop: "CreatedAt",
+        fixed: true,
+        width: 200,
+        type: "datetime",
+        format: "yyyy-MM-dd hh:mm:ss",
     }, {
         label: "状态",
         prop: "status",
@@ -35,15 +44,11 @@ export default {
         type: 'select',
         slot: true,
         dicData: [{
-            label: '正常',
+            label: '成功',
             value: 1
         }, {
-            label: '禁止',
+            label: '失败',
             value: 2
         }]
-    }, {
-        label: "描述信息",
-        prop: "remark",
-        fixed: true,
     }]
 }
