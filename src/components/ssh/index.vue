@@ -17,7 +17,7 @@ export default {
   props: {
     info: {
       type: Object,
-      default: {}
+      default: null
     },
   },
   data() {
@@ -80,7 +80,7 @@ export default {
   methods: {
     runRealTerminal() {
       console.log('webSocket is finished')
-      this.timer= setInterval(this.sendHeart, 3000);
+      this.timer = setInterval(this.sendHeart, 3000);
     },
     sendHeart() {
       const params = {
